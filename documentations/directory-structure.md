@@ -17,7 +17,7 @@
 - package.json 项目中所需要的所有模块
 - package-lock.json 锁定所有模块的版本号(包括主模块和所有依赖子模块)
 - vue.config.js Vue配置文件
-- README.md 项目介绍文档
+- [README.md 项目介绍文档](../README.md)
 - .browserslistrc 配置项目兼容的浏览器
 - babel.config.js babel配置文件
 - .eslintrc.js eslint配置文件
