@@ -20,7 +20,7 @@ module.exports = {
         }
     },
     devServer: {
-        port: 8080,
+        port: 8080, // 设置本地服务端口号
         disableHostCheck: true, // 禁用主机检查，可以使外部主机访问本地Vue服务器
         proxy: { // 反向代理
             'api/': {
