@@ -13,8 +13,8 @@ import {
   Upload,
   MessageBox,
   Autocomplete,
-  Empty,
-} from 'element-ui';
+  Empty
+} from 'element-ui'
 
 export default {
   [Button.name]: Button,
@@ -32,4 +32,4 @@ export default {
   [Empty.name]: Empty,
   Message,
   MessageBox
-};
+}
