@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 const routes = [{
         path: '/',
         name: 'login',
-        component: () => import('views/LoginTest/LoginTest.vue'),
+        component: () => import('views/loginTest/LoginTest.vue'),
     },
     {
         path: '/login',
@@ -15,27 +15,27 @@ const routes = [{
     {
         path: '/register',
         name: 'register',
-        component: () => import('views/Register/Register.vue'),
+        component: () => import('views/register/Register.vue'),
     },
     {
         path: '/home',
         name: 'home',
-        component: () => import('views/Home/Home.vue'),
+        component: () => import('views/home/Home.vue'),
     },
     {
         path: '/guide',
         name: 'guide',
-        component: () => import('views/Guide/Guide.vue'),
+        component: () => import('views/guide/Guide.vue'),
     },
     {
         path: '/articles',
         name: 'articles',
-        component: () => import('views/Articles/Articles.vue'),
+        component: () => import('views/articles/Articles.vue'),
     },
     {
         path: '/administrator',
         name: 'administratore',
-        component: () => import('views/Administrator/Administrator.vue'),
+        component: () => import('views/administrator/Administrator.vue'),
     },
 ];
 

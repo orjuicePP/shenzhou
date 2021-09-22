@@ -38,10 +38,10 @@
 </template>
  
 <script>
-import register from "@/views/Register/Register.vue";
+import register from "@/views/register/Register.vue";
 
 export default {
-    data() {
+    data () {
         var validatePass = (rule, value, callback) => {
             if (value === "") {
                 callback(new Error("请输入密码"));
@@ -74,13 +74,13 @@ export default {
 
     methods: {
         //选项卡切换
-        handleClick(tab, event) { },
+        handleClick (tab, event) { },
         //重置表单
-        resetForm(formName) {
+        resetForm (formName) {
             this.$refs[formName].resetFields();
         },
         //提交表单
-        submitForm(formName) {
+        submitForm (formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.$message({
