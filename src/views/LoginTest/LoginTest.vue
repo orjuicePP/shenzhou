@@ -44,7 +44,7 @@
 </template>
  
 <script>
-import register from "@/views/Register";
+import register from "@/views/Register/Register.vue";
 
 export default {
   data() {
@@ -61,7 +61,7 @@ export default {
     };
 
     return {
-      imgSrc: require("../assets/img/one.jpg"),
+      imgSrc: require("assets/img/one.png"),
       activeName: "first",
       ruleForm: {
         name: "",
