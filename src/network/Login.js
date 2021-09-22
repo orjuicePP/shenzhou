@@ -9,8 +9,8 @@ export function login(data) {
         url: '/login',
         params: {
             username: data.username,
-            password: data.password
-        }
+            password: data.password,
+        },
     });
 };
 
@@ -20,11 +20,11 @@ export function changePwd(data) {
         method: 'POST',
         url: '/changePwd',
         headers: {
-            token: data.token
+            token: data.token,
         },
         params: {
             oldPassword: data.oldPwd,
-            newPassword: data.newPwd
-        }
+            newPassword: data.newPwd,
+        },
     });
 };

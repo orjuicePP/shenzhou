@@ -31,5 +31,5 @@ export default {
   [Autocomplete.name]: Autocomplete,
   [Empty.name]: Empty,
   Message,
-  MessageBox
-}
+  MessageBox,
+};

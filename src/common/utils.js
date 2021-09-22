@@ -4,16 +4,16 @@
  * @param {*} name 要获取的样式名
  * @author tracy
  */
-function getStyle (obj, name) {
-  if (window.getComputedStyle) {
-    // 正常浏览器的方式，有此方法
-    return getComputedStyle(obj, null)[name]
-  } else {
-    // IE8方法
-    return obj.currentStyle[name]
-  }
-  // return window.getComputedStyle?getComputedStyle(obj,null)[name]:obj.currentStyle[name];
-}
+function getStyle(obj, name) {
+    if (window.getComputedStyle) {
+        // 正常浏览器的方式，有此方法
+        return getComputedStyle(obj, null)[name];
+    } else {
+        // IE8方法
+        return obj.currentStyle[name];
+    };
+    // return window.getComputedStyle?getComputedStyle(obj,null)[name]:obj.currentStyle[name];
+};
 
 /**
  *
@@ -22,14 +22,14 @@ function getStyle (obj, name) {
  * @param {string} text 要复制到剪切板的内容
  * @author 60rzvvbj
  */
-function setShearPlateData (text) {
-  var input = document.createElement('input')
-  document.body.appendChild(input)
-  input.setAttribute('value', text)
-  input.select()
-  document.execCommand('copy')
-  document.body.removeChild(input)
-}
+function setShearPlateData(text) {
+    var input = document.createElement('input');
+    document.body.appendChild(input);
+    input.setAttribute('value', text);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+};
 
 /**
  *
@@ -39,14 +39,14 @@ function setShearPlateData (text) {
  * @param {string} key 属性名
  * @author 60rzvvbj
  */
-function getCSS (dom, key) {
-  var t = dom.style.cssText.match(new RegExp('(^|\\s)' + key + ': ([^;]+)(;|$)'))
-  return t != null ? t[2] : null
-}
+function getCSS(dom, key) {
+    var t = dom.style.cssText.match(new RegExp('(^|\\s)' + key + ': ([^;]+)(;|$)'));
+    return t != null ? t[2] : null;
+};
 
 Node.prototype.getCSS = function (key) {
-  return getCSS(this, key)
-}
+    return getCSS(this, key);
+};
 
 /**
  *
@@ -56,12 +56,12 @@ Node.prototype.getCSS = function (key) {
  * @param {number} time 有效时间
  * @author 60rzvvbj
  */
-function setCookie (json, time) {
-  var date = new Date(Date.now() + time * 86400000).toUTCString()
-  for (var key in json) {
-    document.cookie = key + '=' + json[key] + '; expires=' + date
-  }
-}
+function setCookie(json, time) {
+    var date = new Date(Date.now() + time * 86400000).toUTCString();
+    for (var key in json) {
+        document.cookie = key + '=' + json[key] + '; expires=' + date;
+    };
+};
 
 /**
  *
@@ -70,10 +70,10 @@ function setCookie (json, time) {
  * @param {string} attr 字段名
  * @author 60rzvvbj
  */
-function getCookie (attr) {
-  var t = document.cookie.match(new RegExp('(^|\\s)' + attr + '=([^;]+)(;|$)'))
-  return t != null ? t[2] : null
-}
+function getCookie(attr) {
+    var t = document.cookie.match(new RegExp('(^|\\s)' + attr + '=([^;]+)(;|$)'));
+    return t != null ? t[2] : null;
+};
 
 /**
  *
@@ -82,18 +82,18 @@ function getCookie (attr) {
  * @param {string} attr 字段名
  * @author 60rzvvbj
  */
-function removeCookie (attr) {
-  var json = {}
-  json[attr] = ''
-  setCookie(json, -1)
-}
+function removeCookie(attr) {
+    var json = {};
+    json[attr] = '';
+    setCookie(json, -1);
+};
 
 Node.prototype.show = function () {
-  this.style.display = 'block'
-}
+    this.style.display = 'block';
+};
 Node.prototype.hide = function () {
-  this.style.display = 'none'
-}
+    this.style.display = 'none';
+};
 
 /**
  *
@@ -104,9 +104,9 @@ Node.prototype.hide = function () {
  * @returns {number} 返回生成的随机数
  * @author 60rzvvbj
  */
-function getDoubleRandom (l, r) {
-  return l + Math.random() * (r - l + 1)
-}
+function getDoubleRandom(l, r) {
+    return l + Math.random() * (r - l + 1);
+};
 
 /**
  *
@@ -117,9 +117,9 @@ function getDoubleRandom (l, r) {
  * @returns {number} 返回生成的随机数
  * @author 60rzvvbj
  */
-function getIntRandom (l, r) {
-  return parseInt(getDoubleRandom(l, r))
-}
+function getIntRandom(l, r) {
+    return parseInt(getDoubleRandom(l, r));
+};
 
 /**
  *
@@ -130,9 +130,9 @@ function getIntRandom (l, r) {
  * @returns 返回一个rgb字符串
  * @author 60rzvvbj
  */
-function randomColor (l, r) {
-  return 'rgb(' + getIntRandom(l, r) + ',' + getIntRandom(l, r) + ',' + getIntRandom(l, r) + ')'
-}
+function randomColor(l, r) {
+    return 'rgb(' + getIntRandom(l, r) + ',' + getIntRandom(l, r) + ',' + getIntRandom(l, r) + ')';
+};
 
 /**
  *
@@ -141,20 +141,20 @@ function randomColor (l, r) {
  * @param {Array({rank, data})} messages 字符串们
  * @author 60rzvvbj
  */
-function randomData (messages) {
-  let sum = 0
-  for (let i = 0; i < messages.length; i++) {
-    sum += messages[i].rank
-  }
-  let randNum = getDoubleRandom(0, sum)
-  for (let i = 0; i < messages.length - 1; i++) {
-    if (randNum <= messages[i].rank) {
-      return messages[i].data
-    } else {
-      randNum -= messages[i].rank
-    }
-  }
-  return messages[messages.length - 1].data
+function randomData(messages) {
+    let sum = 0;
+    for (let i = 0; i < messages.length; i++) {
+        sum += messages[i].rank;
+    };
+    let randNum = getDoubleRandom(0, sum);
+    for (let i = 0; i < messages.length - 1; i++) {
+        if (randNum <= messages[i].rank) {
+            return messages[i].data;
+        } else {
+            randNum -= messages[i].rank;
+        };
+    };
+    return messages[messages.length - 1].data;
 }
 
 /**
@@ -164,21 +164,21 @@ function randomData (messages) {
  * @param date 时间串
  * @author 60rzvvbj
  */
-function getDateString (date) {
-  date = parseInt(date)
-  let res = ''
-  const dateObj = new Date(date)
-  res += dateObj.getMonth() + 1
-  res += '/'
-  res += dateObj.getDate()
-  res += ' '
-  const h = dateObj.getHours()
-  res += h < 10 ? '0' + h : h
-  res += ':'
-  const m = dateObj.getMinutes()
-  res += m < 10 ? '0' + m : m
-  return res
-}
+function getDateString(date) {
+    date = parseInt(date);
+    let res = '';
+    const dateObj = new Date(date);
+    res += dateObj.getMonth() + 1;
+    res += '/';
+    res += dateObj.getDate();
+    res += ' ';
+    const h = dateObj.getHours();
+    res += h < 10 ? '0' + h : h;
+    res += ':';
+    const m = dateObj.getMinutes();
+    res += m < 10 ? '0' + m : m;
+    return res;
+};
 
 /**
  *
@@ -188,22 +188,22 @@ function getDateString (date) {
  * @param {number} len 要生成的字符串的长度
  * @author 60rzvvbj
  */
-function randomString (str, len) {
-  let res = ''
-  for (let i = 0; i < len; i++) {
-    res += str[getIntRandom(0, str.length)]
-  }
-  return res
-}
+function randomString(str, len) {
+    let res = '';
+    for (let i = 0; i < len; i++) {
+        res += str[getIntRandom(0, str.length)];
+    };
+    return res;
+};
 
 export default {
-  getCookie,
-  setCookie,
-  removeCookie,
-  getDoubleRandom,
-  getIntRandom,
-  randomColor,
-  randomData,
-  getDateString,
-  randomString
-}
+    getCookie,
+    setCookie,
+    removeCookie,
+    getDoubleRandom,
+    getIntRandom,
+    randomColor,
+    randomData,
+    getDateString,
+    randomString,
+};
