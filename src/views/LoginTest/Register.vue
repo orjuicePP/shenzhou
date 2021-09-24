@@ -84,7 +84,6 @@ export default {
 
     methods: {
         submitForm(formName) {
-            // console.log(this.$refs[formName].validate);
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
                     const res = await register(this.ruleForm);
@@ -96,8 +95,8 @@ export default {
                         this.$message.error("注册失败");
                     }
 
-                    // 跳转到登录页面
-                    this.$router.push("/login");
+                    // 返回登录页面
+                    this.$emit('back', this.activeName);
 
                 } else {
                     console.log("error submit!!");
