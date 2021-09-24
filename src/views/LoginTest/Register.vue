@@ -33,9 +33,9 @@
         </el-form-item>
     </el-form>
 </template>
- 
+
 <script>
-import ElementUI from "plugins/ElementUI.js"
+import ElementUI from "plugins/ElementUI.js";
 import { register } from "network/Login.js";
 
 export default {

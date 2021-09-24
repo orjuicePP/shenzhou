@@ -45,10 +45,10 @@
         </div>
     </div>
 </template>
- 
+
 <script>
 import register from "views/loginTest/Register.vue";
-import ElementUI from "plugins/ElementUI.js"
+import ElementUI from "plugins/ElementUI.js";
 import { login, changePwd } from "network/Login.js";
 
 export default {
@@ -125,7 +125,7 @@ export default {
     },
 };
 </script>
- 
+
 <style scoped>
 .all {
 }
