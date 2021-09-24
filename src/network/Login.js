@@ -4,12 +4,13 @@ import {
 
 // 登录
 export function login(data) {
+    console.log(data);
     return request({
         method: 'POST',
         url: '/login',
         params: {
-            username: data.username,
-            password: data.password,
+            username: data.name,
+            password: data.pass,
         },
     });
 };

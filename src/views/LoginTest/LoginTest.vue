@@ -98,12 +98,10 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
-                    const l = login(this.ruleForm);
-                    const meth = l.method;
-                    if (meth == 'POST') {
-                        const { data: res } = await this.$http.post(l.url, l.params);
-                        console.log(res);
-                    }
+                    const res = await login(this.ruleForm);
+                    // const res = this.$http.post(l.url, l.params);
+                    console.log(res);
+
                     if (res.meta.flag == true) {
                         // console.log("登录成功");
                         this.$message.success("登录成功");
@@ -116,9 +114,6 @@ export default {
                     //     type: "success",
                     //     message: "登录成功",
                     // });
-
-                    // 将token存到sessionStorage中
-                    // window.sessionStorage.setItem("token", res.data.token);
 
                     // 将token存到cookie中
                     $.cookie("token", res.data.token);
