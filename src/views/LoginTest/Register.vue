@@ -10,6 +10,10 @@
             <el-input v-model="ruleForm.name" clearable></el-input>
         </el-form-item>
 
+        <el-form-item label="账号" prop="account">
+            <el-input v-model="ruleForm.account" clearable></el-input>
+        </el-form-item>
+
         <el-form-item label="密码" prop="pass">
             <el-input type="password" v-model="ruleForm.pass" auto-complete="off" show-password></el-input>
         </el-form-item>
@@ -32,6 +36,7 @@
  
 <script>
 import ElementUI from "plugins/ElementUI.js"
+import { register } from "network/Login.js";
 
 export default {
     data() {
@@ -59,6 +64,7 @@ export default {
         return {
             activeName: "second",
             ruleForm: {
+                account: "",
                 name: "",
                 pass: "",
                 checkPass: "",
@@ -78,20 +84,30 @@ export default {
 
     methods: {
         submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
+            // console.log(this.$refs[formName].validate);
+            this.$refs[formName].validate(async (valid) => {
                 if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "注册成功",
-                    });
-                    // this.activeName: 'first',
+                    const res = await register(this.ruleForm);
+                    console.log(res);
+
+                    if (res.data.flag == true) {
+                        this.$message.success("注册成功");
+                    } else {
+                        this.$message.error("注册失败");
+                    }
+
+                    // 跳转到登录页面
+                    this.$router.push("/login");
+
                 } else {
                     console.log("error submit!!");
                     return false;
                 }
+
             });
         },
 
+        // 重置表单
         resetForm(formName) {
             this.$refs[formName].resetFields();
         },

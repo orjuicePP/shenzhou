@@ -17,7 +17,7 @@
                         label-width="100px"
                         class="demo-ruleForm"
                     >
-                        <el-form-item label="名称" prop="name">
+                        <el-form-item label="账号" prop="name">
                             <el-input v-model="ruleForm.name" clearable></el-input>
                         </el-form-item>
 
@@ -46,11 +46,9 @@
     </div>
 </template>
  
-<script src="web/js/jquery-1.9.1.min.js"></script>
-<script src="web/js/jquery.cookie.js"></script>
 <script>
-import register from "@/views/register/Register.vue";
-// import ElementUI from "plugins/ElementUI.js"
+import register from "views/loginTest/Register.vue";
+import ElementUI from "plugins/ElementUI.js"
 import { login, changePwd } from "network/Login.js";
 
 export default {
@@ -99,28 +97,20 @@ export default {
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
                     const res = await login(this.ruleForm);
-                    // const res = this.$http.post(l.url, l.params);
                     console.log(res);
 
-                    if (res.meta.flag == true) {
-                        // console.log("登录成功");
+                    if (res.data.flag == true) {
                         this.$message.success("登录成功");
                     } else {
-                        // console.log("登录失败");
                         this.$message.error("登录失败");
                     }
 
-                    // this.$message({
-                    //     type: "success",
-                    //     message: "登录成功",
-                    // });
-
                     // 将token存到cookie中
-                    $.cookie("token", res.data.token);
-                    $.cookie("account", res.data.username);
+                    // $.cookie("token", res.data.token);
+                    // $.cookie("account", res.data.username);
 
                     // 跳转到主页
-                    this.$router.push("home");
+                    this.$router.push("/home");
                 } else {
                     console.log("error submit!!");
                     return false;
@@ -131,7 +121,7 @@ export default {
 
     components: {
         register,
-        // ...ElementUI,
+        ...ElementUI,
     },
 };
 </script>

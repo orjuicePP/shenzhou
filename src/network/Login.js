@@ -4,7 +4,6 @@ import {
 
 // 登录
 export function login(data) {
-    console.log(data);
     return request({
         method: 'POST',
         url: '/login',
@@ -26,6 +25,19 @@ export function changePwd(data) {
         params: {
             oldPassword: data.oldPwd,
             newPassword: data.newPwd,
+        },
+    });
+};
+
+// 注册
+export function register(data) {
+    return request({
+        method: 'POST',
+        url: '/register',
+        params: {
+            account: data.account,
+            password: data.pass,
+            username: data.name,
         },
     });
 };
