@@ -7,14 +7,22 @@
         class="demo-ruleForm"
     >
         <el-form-item label="用户名" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="ruleForm.name" clearable></el-input>
         </el-form-item>
+
         <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" auto-complete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.pass" auto-complete="off" show-password></el-input>
         </el-form-item>
+
         <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm.checkPass" auto-complete="off"></el-input>
+            <el-input
+                type="password"
+                v-model="ruleForm.checkPass"
+                auto-complete="off"
+                show-password
+            ></el-input>
         </el-form-item>
+
         <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -23,6 +31,8 @@
 </template>
  
 <script>
+import ElementUI from "plugins/ElementUI.js"
+
 export default {
     data() {
         var validatePass = (rule, value, callback) => {
@@ -86,5 +96,9 @@ export default {
             this.$refs[formName].resetFields();
         },
     },
+
+    components: {
+        ...ElementUI,
+    }
 };
 </script>

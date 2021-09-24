@@ -1,10 +1,14 @@
 <template>
     <div class="all">
+        <!-- 背景 -->
         <div class="background">
             <img :src="imgSrc" width="100%" height="100%" alt />
         </div>
+
+        <!-- 表单 -->
         <div class="login">
             <el-tabs v-model="activeName" @tab-click="handleClick">
+                <!-- 登陆 -->
                 <el-tab-pane label="登录" name="first">
                     <el-form
                         :model="ruleForm"
@@ -14,21 +18,26 @@
                         class="demo-ruleForm"
                     >
                         <el-form-item label="名称" prop="name">
-                            <el-input v-model="ruleForm.name"></el-input>
+                            <el-input v-model="ruleForm.name" clearable></el-input>
                         </el-form-item>
 
                         <el-form-item label="密码" prop="pass">
-                            <el-input type="password" v-model="ruleForm.pass" auto-complete="off"></el-input>
+                            <el-input
+                                type="password"
+                                v-model="ruleForm.pass"
+                                auto-complete="off"
+                                show-password
+                            ></el-input>
                         </el-form-item>
 
                         <el-form-item>
                             <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-
                             <el-button @click="resetForm('ruleForm')">重置</el-button>
                         </el-form-item>
                     </el-form>
                 </el-tab-pane>
 
+                <!-- 注册 -->
                 <el-tab-pane label="注册" name="second">
                     <register></register>
                 </el-tab-pane>
@@ -37,11 +46,15 @@
     </div>
 </template>
  
+<script src="web/js/jquery-1.9.1.min.js"></script>
+<script src="web/js/jquery.cookie.js"></script>
 <script>
 import register from "@/views/register/Register.vue";
+// import ElementUI from "plugins/ElementUI.js"
+import { login, changePwd } from "network/Login.js";
 
 export default {
-    data () {
+    data() {
         var validatePass = (rule, value, callback) => {
             if (value === "") {
                 callback(new Error("请输入密码"));
@@ -63,30 +76,55 @@ export default {
                 checkPass: "",
             },
             rules: {
+                // 验证用户名
                 name: [
                     { required: true, message: "请输入您的名称", trigger: "blur" },
                     { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
                 ],
+                // 验证密码
                 pass: [{ required: true, validator: validatePass, trigger: "blur" }],
             },
         };
     },
 
     methods: {
-        //选项卡切换
-        handleClick (tab, event) { },
-        //重置表单
-        resetForm (formName) {
+        // 选项卡切换
+        handleClick(tab, event) { },
+        // 重置表单
+        resetForm(formName) {
             this.$refs[formName].resetFields();
         },
-        //提交表单
-        submitForm (formName) {
-            this.$refs[formName].validate((valid) => {
+        // 提交表单
+        submitForm(formName) {
+            this.$refs[formName].validate(async (valid) => {
                 if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "登录成功",
-                    });
+                    const l = login(this.ruleForm);
+                    const meth = l.method;
+                    if (meth == 'POST') {
+                        const { data: res } = await this.$http.post(l.url, l.params);
+                        console.log(res);
+                    }
+                    if (res.meta.flag == true) {
+                        // console.log("登录成功");
+                        this.$message.success("登录成功");
+                    } else {
+                        // console.log("登录失败");
+                        this.$message.error("登录失败");
+                    }
+
+                    // this.$message({
+                    //     type: "success",
+                    //     message: "登录成功",
+                    // });
+
+                    // 将token存到sessionStorage中
+                    // window.sessionStorage.setItem("token", res.data.token);
+
+                    // 将token存到cookie中
+                    $.cookie("token", res.data.token);
+                    $.cookie("account", res.data.username);
+
+                    // 跳转到主页
                     this.$router.push("home");
                 } else {
                     console.log("error submit!!");
@@ -95,28 +133,35 @@ export default {
             });
         },
     },
+
     components: {
         register,
+        // ...ElementUI,
     },
 };
 </script>
  
 <style scoped>
+.all {
+}
+
 .background {
+    position: absolute;
     width: 100%;
     height: 100%;
     z-index: -1;
-    position: absolute;
 }
 
 .login {
-    z-index: 1;
     position: absolute;
     width: 400px;
+    z-index: 1;
     top: 50%;
     left: 50%;
-    margin-left: -200px;
-    margin-top: -152.7px;
+    transform: translate(-50%, -50%);
+    padding: 40px 60px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
 }
 
 .el-tabsitem {

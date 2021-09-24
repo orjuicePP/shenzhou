@@ -13,7 +13,8 @@ import {
     Upload,
     MessageBox,
     Autocomplete,
-    Empty
+    Empty,
+    Tabs,
 } from 'element-ui';
 
 export default {
@@ -30,6 +31,7 @@ export default {
     [Upload.name]: Upload,
     [Autocomplete.name]: Autocomplete,
     [Empty.name]: Empty,
+    [Tabs.name]: Tabs,
     Message,
     MessageBox,
 };
