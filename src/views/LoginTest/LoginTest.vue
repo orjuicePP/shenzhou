@@ -39,7 +39,7 @@
 
                 <!-- 注册 -->
                 <el-tab-pane label="注册" name="second">
-                    <register></register>
+                    <register @back="goBack"></register>
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -88,10 +88,12 @@ export default {
     methods: {
         // 选项卡切换
         handleClick(tab, event) { },
+
         // 重置表单
         resetForm(formName) {
             this.$refs[formName].resetFields();
         },
+
         // 提交表单
         submitForm(formName) {
             this.$refs[formName].validate(async (valid) => {
@@ -117,6 +119,11 @@ export default {
                 }
             });
         },
+
+        // 跳回登录页面
+        goBack(activeName) {
+            this.activeName = "first";
+        },
     },
 
     components: {
@@ -127,9 +134,6 @@ export default {
 </script>
  
 <style scoped>
-.all {
-}
-
 .background {
     position: absolute;
     width: 100%;
