@@ -34,7 +34,7 @@ const routes = [{
     },
     {
         path: '/administrator',
-        name: 'administratore',
+        name: 'administrator',
         component: () => import('views/administrator/Administrator.vue'),
     },
 ];
