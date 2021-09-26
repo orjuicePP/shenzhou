@@ -1,12 +1,12 @@
 <template>
-    <div class="root">
+    <div class="headerRoot">
         <div class="header">
             <div class="headerMain">
-                <div class="logo"></div>
-                <div class="userInfo"></div>
-                <div class="shop"></div>
-                <div class="admin"></div>
-                <div class="guide"></div>
+                <div class="logo">logo</div>
+                <div class="userInfo">{{"杨超旭"}}</div>
+                <div class="shop">商城</div>
+                <div class="admin">管理员页</div>
+                <div class="guide">导游页</div>
             </div>
         </div>
         <div class="fill"></div>
@@ -24,12 +24,52 @@ export default {
     width: 100%;
     height: var(--headerHeight);
     position: fixed;
-    background-color: pink;
+    background-color: #fff;
 }
 
 .headerMain {
-    width: var(--basrWidth);
+    width: var(--baseWidth);
     height: 100%;
-    background-color: skyblue;
+    margin: auto;
+}
+
+.headerMain .logo {
+    float: left;
+    width: 200px;
+    height: 100%;
+    background-color: yellow;
+}
+
+.headerMain .userInfo {
+    float: right;
+    width: 100px;
+    height: 100%;
+    background-color: yellow;
+}
+
+.headerMain .shop {
+    float: right;
+    width: 60px;
+    height: 100%;
+    line-height: var(--headerHeight);
+    color: #333;
+    cursor: pointer;
+}
+
+.headerMain .shop:hover {
+    color: #ff5c38;
+}
+
+.headerMain .admin,
+.headerMain .guide {
+    float: left;
+    padding: 0px 20px;
+    height: 100%;
+    line-height: var(--headerHeight);
+}
+
+.fill {
+    width: 100%;
+    height: var(--headerHeight);
 }
 </style>
