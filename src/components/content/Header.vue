@@ -3,10 +3,14 @@
         <div class="header">
             <div class="headerMain">
                 <div class="logo">logo</div>
-                <div class="userInfo">{{"杨超旭"}}</div>
+                <div class="userInfo">
+                    <div class="photo"></div>
+                    <div class="username">{{user.username}}</div>
+                    <div class="info"></div>
+                </div>
                 <div class="shop">商城</div>
-                <div class="admin">管理员页</div>
-                <div class="guide">导游页</div>
+                <div v-if="user.isAdmin" class="admin">管理员页</div>
+                <div v-if="user.isGuide" class="guide">导游页</div>
             </div>
         </div>
         <div class="fill"></div>
@@ -15,7 +19,21 @@
 
 <script>
 export default {
-
+    name: 'Header',
+    data() {
+        return {
+            user: {
+                username: '杨超旭',
+                account: '1808078515',
+                other: '暂无',
+                experience: 0,
+                level: 1,
+                headPortraitUrl: 'url',
+                isAdmin: true,
+                isGuide: true,
+            }
+        };
+    }
 }
 </script>
 
@@ -28,6 +46,7 @@ export default {
 }
 
 .headerMain {
+    --userInfoHeight: 40px;
     width: var(--baseWidth);
     height: 100%;
     margin: auto;
@@ -41,10 +60,26 @@ export default {
 }
 
 .headerMain .userInfo {
+    position: relative;
     float: right;
-    width: 100px;
-    height: 100%;
+    height: var(--userInfoHeight);
+    margin-top: calc((var(--headerHeight) - var(--userInfoHeight)) / 2);
     background-color: yellow;
+}
+
+.headerMain .userInfo .photo {
+    float: left;
+    width: var(--userInfoHeight);
+    height: var(--userInfoHeight);
+    border-radius: 20px;
+    background-color: pink;
+}
+
+.headerMain .userInfo .username {
+    float: right;
+    padding: 0px 0px 0px 10px;
+    font-size: 24px;
+    line-height: var(--userInfoHeight);
 }
 
 .headerMain .shop {
@@ -66,6 +101,13 @@ export default {
     padding: 0px 20px;
     height: 100%;
     line-height: var(--headerHeight);
+    color: #666;
+    cursor: pointer;
+}
+
+.headerMain .admin:hover,
+.headerMain .guide:hover {
+    color: #000;
 }
 
 .fill {
