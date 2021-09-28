@@ -43,7 +43,7 @@ export default {
     height: var(--headerHeight);
     position: fixed;
     /* background-color: #fff; */
-    background-color: burlywood;
+    background-color: burlywood; 
     /* z-index: 1; */
 }
 
