@@ -42,7 +42,9 @@ export default {
     width: 100%;
     height: var(--headerHeight);
     position: fixed;
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: burlywood;
+    /* z-index: 1; */
 }
 
 .headerMain {
