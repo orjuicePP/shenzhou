@@ -6,7 +6,27 @@
                 <div class="userInfo">
                     <div class="photo"></div>
                     <div class="username">{{user.username}}</div>
-                    <div class="info"></div>
+                    <div class="otherInfo">
+                        <i></i>
+                        <div class="baseInfo">
+                            <div class="left"></div>
+                            <div class="right">
+                                <div class="username">{{user.username}}</div>
+                                <div class="account">账号：{{user.account}}</div>
+                            </div>
+                        </div>
+                        <div class="experience">
+                            <div class="level">lv1</div>
+                            <div class="number">5/10</div>
+                            <div class="bar">
+                                <div class="inner"></div>
+                            </div>
+                        </div>
+                        <div class="bottom">
+                            <div class="left">编辑信息</div>
+                            <div class="right">切换账号</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="shop">商城</div>
                 <div v-if="user.isAdmin" class="admin">管理员页</div>
@@ -23,14 +43,14 @@ export default {
     data() {
         return {
             user: {
-                username: '杨超旭',
-                account: '1808078515',
-                other: '暂无',
-                experience: 0,
-                level: 1,
-                headPortraitUrl: 'url',
-                isAdmin: true,
-                isGuide: true,
+                username: '杨超旭', // 用户名 
+                account: '1808078515', // 用户账号
+                other: '暂无', // 其它信息
+                experience: 0, // 经验值
+                level: 1, // 经验等级
+                headPortraitUrl: 'url', // 头像路径
+                isAdmin: true, // 是否为管理员
+                isGuide: true, // 是否为导游
             }
         };
     }
@@ -43,12 +63,13 @@ export default {
     height: var(--headerHeight);
     position: fixed;
     /* background-color: #fff; */
-    background-color: burlywood; 
+    background-color: burlywood;
     /* z-index: 1; */
 }
 
 .headerMain {
     --userInfoHeight: 40px;
+
     width: var(--baseWidth);
     height: 100%;
     margin: auto;
@@ -59,6 +80,7 @@ export default {
     width: 200px;
     height: 100%;
     background-color: yellow;
+    cursor: pointer;
 }
 
 .headerMain .userInfo {
@@ -66,7 +88,7 @@ export default {
     float: right;
     height: var(--userInfoHeight);
     margin-top: calc((var(--headerHeight) - var(--userInfoHeight)) / 2);
-    background-color: yellow;
+    cursor: pointer;
 }
 
 .headerMain .userInfo .photo {
@@ -77,11 +99,162 @@ export default {
     background-color: pink;
 }
 
-.headerMain .userInfo .username {
+.headerMain .userInfo > .username {
     float: right;
     padding: 0px 0px 0px 10px;
     font-size: 24px;
     line-height: var(--userInfoHeight);
+}
+
+.headerMain .userInfo .otherInfo {
+    --contentBGC: #fff;
+    --shadowC: #999;
+
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 3px 1px var(--shadowC);
+    background-color: var(--contentBGC);
+    cursor: default;
+}
+
+.headerMain .userInfo:hover .otherInfo {
+    display: block;
+}
+
+.headerMain .userInfo .otherInfo::before {
+    position: absolute;
+    top: -10px;
+    left: 0px;
+    width: 100%;
+    height: 10px;
+    content: "";
+}
+
+.headerMain .userInfo .otherInfo i {
+    --size: 16px;
+
+    position: absolute;
+    right: 60px;
+    top: calc(0px - var(--size));
+    width: var(--size);
+    height: var(--size);
+}
+
+.headerMain .userInfo .otherInfo i::before,
+.headerMain .userInfo .otherInfo i::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: calc(var(--size) / 2) solid transparent;
+    content: "";
+}
+
+.headerMain .userInfo .otherInfo i::before {
+    top: 0px;
+    border-bottom-color: var(--shadowC);
+}
+
+.headerMain .userInfo .otherInfo i::after {
+    top: 1px;
+    border-bottom-color: var(--contentBGC);
+}
+
+.headerMain .userInfo .otherInfo .baseInfo {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+    height: 40px;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .left {
+    width: 40px;
+    border-radius: 20px;
+    background-color: pink;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .right {
+    flex: 1;
+    padding-left: 10px;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .right .username {
+    height: 22px;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .right .account {
+    font-size: 12px;
+}
+
+.headerMain .userInfo .otherInfo .experience {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    margin-top: 5px;
+}
+
+.headerMain .userInfo .otherInfo .experience .level {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size: 12px;
+    color: #ff5c38;
+}
+
+.headerMain .userInfo .otherInfo .experience .number {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    font-size: 12px;
+    color: #333;
+}
+
+.headerMain .userInfo .otherInfo .experience .bar {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 5px;
+    border-radius: 5px;
+    background-color: #ccc;
+}
+
+.headerMain .userInfo .otherInfo .experience .bar .inner {
+    width: 50%;
+    height: 100%;
+    border-radius: 5px;
+    background-color: #ff5c38;
+}
+
+.headerMain .userInfo .otherInfo .bottom {
+    margin-top: 10px;
+    /* border-top: 1px solid #666; */
+}
+
+.headerMain .userInfo .otherInfo .bottom div {
+    font-size: 13px;
+    cursor: pointer;
+    color: #555;
+}
+
+.headerMain .userInfo .otherInfo .bottom div:hover {
+    color: #000;
+}
+
+.headerMain .userInfo .otherInfo .bottom .left {
+    float: left;
+}
+
+.headerMain .userInfo .otherInfo .bottom .right {
+    float: right;
 }
 
 .headerMain .shop {
