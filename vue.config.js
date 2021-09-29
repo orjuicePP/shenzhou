@@ -24,11 +24,15 @@ module.exports = {
         disableHostCheck: true, // 禁用主机检查，可以使外部主机访问本地Vue服务器
         proxy: { // 反向代理
             'api/': {
-                target: 'http://192.168.0.168:8888',
+                target: 'http://localhost:8888',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
                 }
+            },
+            'file/': {
+                target: 'http://localhost:8888',
+                changeOrigin: true,
             }
         }
     }

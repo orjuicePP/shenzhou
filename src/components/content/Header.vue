@@ -4,7 +4,7 @@
             <div class="headerMain">
                 <div class="logo">logo</div>
                 <div class="userInfo">
-                    <div class="photo"></div>
+                    <div class="photo" :style="{backgroundImage: `url('${user.headPortraitUrl}')`}"></div>
                     <div class="username">{{user.username}}</div>
                     <div class="otherInfo">
                         <i></i>
@@ -16,10 +16,10 @@
                             </div>
                         </div>
                         <div class="experience">
-                            <div class="level">lv1</div>
-                            <div class="number">5/10</div>
+                            <div class="level">Lv{{user.level}}</div>
+                            <div class="number">{{user.experience}}/{{expLimit}}</div>
                             <div class="bar">
-                                <div class="inner"></div>
+                                <div class="inner" :style="{width: `${getExpPercentage()}%`}"></div>
                             </div>
                         </div>
                         <div class="bottom">
@@ -38,10 +38,14 @@
 </template>
 
 <script>
+import { getOwnInfo, getExperienceTable } from 'network/Header.js';
+
 export default {
     name: 'Header',
     data() {
         return {
+            experienceTable: [],
+
             user: {
                 username: '杨超旭', // 用户名 
                 account: '1808078515', // 用户账号
@@ -53,6 +57,32 @@ export default {
                 isGuide: true, // 是否为导游
             }
         };
+    },
+    async created() {
+        let etData = (await getExperienceTable({
+            token: util.getCookie('token')
+        })).data;
+        this.experienceTable = etData.data.experienceTable;
+
+        let infoData = (await getOwnInfo({
+            token: util.getCookie('token')
+        })).data;
+        this.user.account = util.getCookie('account');
+        this.user.username = infoData.data.username;
+        this.user.experience = infoData.data.experience;
+        this.user.headPortraitUrl = infoData.data.headPortraitUrl;
+        this.user.level = infoData.data.level;
+        this.user.other = infoData.data.other;
+    },
+    computed: {
+        expLimit() {
+            return this.experienceTable[this.user.level - 1];
+        }
+    },
+    methods: {
+        getExpPercentage() {
+            return this.user.experience / this.expLimit * 100;
+        }
     }
 }
 </script>
@@ -96,7 +126,9 @@ export default {
     width: var(--userInfoHeight);
     height: var(--userInfoHeight);
     border-radius: 20px;
-    background-color: pink;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .headerMain .userInfo > .username {
@@ -140,7 +172,7 @@ export default {
     --size: 16px;
 
     position: absolute;
-    right: 60px;
+    right: 30px;
     top: calc(0px - var(--size));
     width: var(--size);
     height: var(--size);

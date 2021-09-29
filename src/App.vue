@@ -6,6 +6,9 @@
 </template>
 
 <script>
+import util from 'common/utils.js';
+window.util = util;
+
 export default {
     name: "App",
     data() {
