@@ -4,12 +4,17 @@
             <div class="headerMain">
                 <div class="logo">logo</div>
                 <div class="userInfo">
-                    <div class="photo" :style="{backgroundImage: `url('${user.headPortraitUrl}')`}"></div>
+                    <div class="photo" :style="{backgroundImage: `url('${hpUrl}')`}"></div>
                     <div class="username">{{user.username}}</div>
                     <div class="otherInfo">
                         <i></i>
                         <div class="baseInfo">
-                            <div class="left"></div>
+                            <div class="left" :style="{backgroundImage: `url('${hpUrl}')`}">
+                                <div class="upload">
+                                    <span>更换</span>
+                                    <input type="file" ref="file" @change="uploadHP" />
+                                </div>
+                            </div>
                             <div class="right">
                                 <div class="username">{{user.username}}</div>
                                 <div class="account">账号：{{user.account}}</div>
@@ -38,7 +43,8 @@
 </template>
 
 <script>
-import { getOwnInfo, getExperienceTable } from 'network/Header.js';
+import { status } from 'network/request.js';
+import { getOwnInfo, getExperienceTable, uploadHeadPortrait } from 'network/Header.js';
 
 export default {
     name: 'Header',
@@ -52,7 +58,7 @@ export default {
                 other: '暂无', // 其它信息
                 experience: 0, // 经验值
                 level: 1, // 经验等级
-                headPortraitUrl: 'url', // 头像路径
+                headPortraitUrl: null, // 头像路径
                 isAdmin: true, // 是否为管理员
                 isGuide: true, // 是否为导游
             }
@@ -77,12 +83,37 @@ export default {
     computed: {
         expLimit() {
             return this.experienceTable[this.user.level - 1];
+        },
+        hpUrl() {
+            if (this.user.headPortraitUrl != null) {
+                let pre = '/file?url=';
+                if (status == 'build') {
+                    pre = '/api' + pre;
+                }
+                return pre + this.user.headPortraitUrl + '&random=' + parseInt(Math.random() * 100000000);
+            } else {
+                return null;
+            }
         }
     },
     methods: {
         getExpPercentage() {
             return this.user.experience / this.expLimit * 100;
-        }
+        },
+        async uploadHP() {
+            let res = (await uploadHeadPortrait({
+                token: util.getCookie('token'),
+                file: this.$refs.file.files[0]
+            })).data;
+            if (res.data.url == null) {
+                let str = this.user.headPortraitUrl;
+                this.user.headPortraitUrl = '';
+                this.user.headPortraitUrl = str;
+                // this.user.headPortraitUrl = this.user.headPortraitUrl;
+            } else {
+                this.user.headPortraitUrl = res.data.url;
+            }
+        },
     }
 }
 </script>
@@ -126,7 +157,7 @@ export default {
     width: var(--userInfoHeight);
     height: var(--userInfoHeight);
     border-radius: 20px;
-    background-size: contain;
+    background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
 }
@@ -206,9 +237,44 @@ export default {
 }
 
 .headerMain .userInfo .otherInfo .baseInfo .left {
+    position: relative;
     width: 40px;
     border-radius: 20px;
     background-color: pink;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .left .upload {
+    display: none;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 16px;
+    cursor: pointer;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .left:hover .upload {
+    display: block;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .left .upload span {
+    display: block;
+    font-size: 10px;
+    text-align: center;
+    background-color: rgba(51, 51, 51, 0.5);
+    color: #eee;
+    pointer-events: none;
+}
+
+.headerMain .userInfo .otherInfo .baseInfo .left .upload input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+    cursor: pointer;
 }
 
 .headerMain .userInfo .otherInfo .baseInfo .right {

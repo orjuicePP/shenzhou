@@ -21,5 +21,19 @@ export function getExperienceTable(data) {
         headers: {
             token: data.token,
         },
-    })
+    });
+}
+
+// 上传头像
+export function uploadHeadPortrait(data) {
+    let formData = new FormData();
+    formData.append('file', data.file);
+    return request({
+        method: 'POST',
+        url: '/uploadHeadPortrait',
+        headers: {
+            token: data.token,
+        },
+        data: formData,
+    });
 }

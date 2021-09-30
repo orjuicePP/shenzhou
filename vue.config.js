@@ -30,10 +30,10 @@ module.exports = {
                     '^/api': ''
                 }
             },
-            'file/': {
-                target: 'http://localhost:8888',
-                changeOrigin: true,
-            }
+            // 'file/': {
+            //     target: 'http://localhost:8888',
+            //     changeOrigin: true,
+            // }
         }
     }
 };
