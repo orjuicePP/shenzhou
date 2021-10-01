@@ -164,6 +164,7 @@ export default {
     width: 100%;
     height: var(--headerHeight);
     position: fixed;
+    z-index: 100;
     background-color: rgba(255, 255, 255, 0.8);
 }
 
