@@ -25,4 +25,8 @@ export default {
     --baseWidth: 1280px;
     --headerHeight: 60px;
 }
+
+body {
+    background-color: #e3e3e3;
+}
 </style>
