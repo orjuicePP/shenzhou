@@ -37,6 +37,11 @@ const routes = [{
         name: 'administrator',
         component: () => import('views/administrator/Administrator.vue'),
     },
+    {
+        path: '/shop',
+        name: 'shop',
+        component: () => import('views/shop/Shop.vue'),
+    },
 ];
 
 const router = new VueRouter({

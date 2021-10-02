@@ -6,6 +6,9 @@
 </template>
 
 <script>
+import util from 'common/utils.js';
+window.util = util;
+
 export default {
     name: "App",
     data() {
@@ -21,5 +24,9 @@ export default {
 #app {
     --baseWidth: 1280px;
     --headerHeight: 60px;
+}
+
+body {
+    background-color: #e3e3e3;
 }
 </style>

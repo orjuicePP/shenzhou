@@ -30,7 +30,6 @@ export default {
 .admin {
     width: 100%;
     height: 100%;
-    background-color: #e3e3e3;
 }
 
 .core {
