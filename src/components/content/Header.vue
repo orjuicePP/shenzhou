@@ -60,7 +60,8 @@
 
 <script>
 import { status } from 'network/request.js';
-import { getOwnInfo, getExperienceTable, uploadHeadPortrait } from 'network/Header.js';
+import { getOwnInfo, getExperienceTable, uploadHeadPortrait, modifyUserInfo } from 'network/Header.js';
+import eui from 'plugins/ElementUI.js';
 
 export default {
     name: 'Header',
@@ -87,23 +88,6 @@ export default {
             }
         };
     },
-    async created() {
-        let etData = (await getExperienceTable({
-            token: util.getCookie('token')
-        })).data;
-        this.experienceTable = etData.data.experienceTable;
-
-        let infoData = (await getOwnInfo({
-            token: util.getCookie('token')
-        })).data;
-        this.user.account = util.getCookie('account');
-        this.user.username = infoData.data.username;
-        this.user.experience = infoData.data.experience;
-        this.user.headPortraitUrl = infoData.data.headPortraitUrl;
-        this.user.level = infoData.data.level;
-        this.user.other = infoData.data.other;
-        this.user.balance = infoData.data.balance;
-    },
     computed: {
         expLimit() {
             return this.experienceTable[this.user.level - 1];
@@ -121,6 +105,18 @@ export default {
         }
     },
     methods: {
+        async loadInfo() {
+            let infoData = (await getOwnInfo({
+                token: util.getCookie('token')
+            })).data;
+            this.user.account = util.getCookie('account');
+            this.user.username = infoData.data.username;
+            this.user.experience = infoData.data.experience;
+            this.user.headPortraitUrl = infoData.data.headPortraitUrl;
+            this.user.level = infoData.data.level;
+            this.user.other = infoData.data.other;
+            this.user.balance = infoData.data.balance;
+        },
         getExpPercentage() {
             return this.user.experience / this.expLimit * 100;
         },
@@ -143,9 +139,19 @@ export default {
             this.editInfoData.username = this.user.username;
             this.editInfoData.other = this.user.other;
         },
-        editInfoSumbit() {
-            console.log(this.editInfoData.username);
-            console.log(this.editInfoData.other);
+        async editInfoSumbit() {
+            let res = (await modifyUserInfo({
+                token: util.getCookie('token'),
+                username: this.editInfoData.username,
+                other: this.editInfoData.other
+            })).data;
+            if (res.flag) {
+                eui.Message.success('修改成功');
+                this.loadInfo();
+                this.editInfoClose();
+            } else {
+                eui.Message.error('修改失败');
+            }
         },
         editInfoClose() {
             this.editInfoData.status = false;
@@ -155,7 +161,15 @@ export default {
                 this.$router.push(page);
             }
         },
-    }
+    },
+    async created() {
+        let etData = (await getExperienceTable({
+            token: util.getCookie('token')
+        })).data;
+        this.experienceTable = etData.data.experienceTable;
+
+        this.loadInfo();
+    },
 }
 </script>
 
