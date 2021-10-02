@@ -13,17 +13,6 @@ export function getOwnInfo(data) {
     });
 }
 
-// 获取经验等级对照表
-export function getExperienceTable(data) {
-    return request({
-        method: 'GET',
-        url: '/getExperienceTable',
-        headers: {
-            token: data.token,
-        },
-    });
-}
-
 // 上传头像
 export function uploadHeadPortrait(data) {
     let formData = new FormData();
