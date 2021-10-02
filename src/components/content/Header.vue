@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop">金{{user.balance}}</div>
+                <div class="shop" @click="toPage('/shop')">金{{user.balance}}</div>
                 <div v-if="user.isAdmin" class="admin" @click="toPage('/administrator')">管理员页</div>
                 <div v-if="user.isGuide" class="guide" @click="toPage('/guide')">导游页</div>
             </div>
@@ -70,15 +70,15 @@ export default {
             experienceTable: [],
 
             user: {
-                username: '杨超旭', // 用户名 
-                account: '1808078515', // 用户账号
+                username: '加载中', // 用户名 
+                account: '', // 用户账号
                 other: '暂无', // 其它信息
                 balance: 0, //余额
                 experience: 0, // 经验值
                 level: 1, // 经验等级
                 headPortraitUrl: null, // 头像路径
-                isAdmin: true, // 是否为管理员
-                isGuide: true, // 是否为导游
+                isAdmin: false, // 是否为管理员
+                isGuide: false, // 是否为导游
             },
 
             editInfoData: {
@@ -116,6 +116,8 @@ export default {
             this.user.level = infoData.data.level;
             this.user.other = infoData.data.other;
             this.user.balance = infoData.data.balance;
+            this.user.isGuide = infoData.data.isGuide;
+            this.user.isAdmin = infoData.data.isAdmin;
         },
         getExpPercentage() {
             return this.user.experience / this.expLimit * 100;
