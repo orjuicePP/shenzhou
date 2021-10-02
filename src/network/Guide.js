@@ -2,15 +2,13 @@ import {
     request
 } from './request.js';
 
-// 登录
+// 获取所有咨询
 export function getConsults(data) {
     return request({
-        method: 'POST',
-        url: '/login',
-        params: {
-            account: data.name,
-            password: data.pass,
+        method: 'GET',
+        url: '/guide/getConsults',
+        headers: {
+            token: data,
         },
     });
 };
-

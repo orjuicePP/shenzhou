@@ -4,15 +4,12 @@
         <Header></Header>
 
         <!-- 导航 -->
-        <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tabs type="border-card" class="tab" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="待回复" name="first">
                 <div class="consults">
-                    <div class="consult noneR" v-for="(item,index) in noneReply">{{item.name}}</div>
-                </div>
-
-                <!-- 分页栏 -->
-                <div class="pages">
-                    <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
+                    <el-button type="text" @click="open">
+                        <div class="consult noneR" v-for="(item,index) in noneReply">{{item.name}}</div>
+                    </el-button>
                 </div>
             </el-tab-pane>
 
@@ -23,21 +20,11 @@
                         v-for="(item,index) in alreadyReply"
                     >{{item.name}}</div>
                 </div>
-
-                <!-- 分页栏 -->
-                <div class="pages">
-                    <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
-                </div>
             </el-tab-pane>
 
             <el-tab-pane label="已评分" name="third">
                 <div class="consults">
                     <div class="consult grades" v-for="(item,index) in grade">{{item.name}}</div>
-                </div>
-
-                <!-- 分页栏 -->
-                <div class="pages">
-                    <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
                 </div>
             </el-tab-pane>
         </el-tabs>
@@ -47,12 +34,15 @@
 <script type="text/ecmascript-6">
 import Header from '../../components/content/Header.vue';
 import { getConsults } from "network/Login.js";
+import util from "common/utils.js"
+window.util = util;
 
 export default {
     components: { Header },
     data() {
         return {
             activeName: 'first',
+            token: util.getCookie("token"),
             noneReply: [
                 { name: '1咨询1', index: 1 },
                 { name: '1咨询2', index: 2 },
@@ -84,7 +74,27 @@ export default {
         handleClick(tab, event) {
             console.log(tab, event);
         },
-
+        open() {
+            this.$prompt('请输入你的回复', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+            }).then(() => {
+                console.log(this);
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '取消输入'
+                });
+            });
+        },
+        async getCons(token) {
+            console.log(token);
+            const res = await getConsults();
+            console.log(res);
+        },
+    },
+    async created() {
+        getCons(token);
     },
 };
 </script>

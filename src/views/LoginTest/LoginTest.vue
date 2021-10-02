@@ -49,7 +49,9 @@
 <script>
 import register from "views/loginTest/Register.vue";
 import ElementUI from "plugins/ElementUI.js";
-import { login, changePwd } from "network/Login.js";
+import { login } from "network/Login.js";
+import util from "common/utils.js"
+window.util = util;
 
 export default {
     data() {
@@ -107,9 +109,11 @@ export default {
                         this.$message.error("登录失败");
                     }
 
-                    // 将token存到cookie中
-                    // $.cookie("token", res.data.token);
-                    // $.cookie("account", res.data.username);
+                    // 将account和token存到cookie中
+                    util.setCookie({
+                        account: formName.name,
+                        token: res.data.data.token
+                    }, 7);
 
                     // 跳转到主页
                     this.$router.push("/home");

@@ -5,11 +5,11 @@ Vue.use(VueRouter);
 
 const routes = [{
         path: '/',
-        name: 'login',
+        name: 'loginTest',
         component: () => import('views/loginTest/LoginTest.vue'),
     },
     {
-        path: '/login',
+        path: '/loginTest',
         redirect: '/',
     },
     {
