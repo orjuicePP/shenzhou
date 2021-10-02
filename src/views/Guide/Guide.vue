@@ -18,7 +18,10 @@
 
             <el-tab-pane label="已回复" name="second">
                 <div class="consults">
-                    <div class="consult alreadyRe" v-for="(item,index) in alreadyReply">{{item.name}}</div>
+                    <div
+                        class="consult alreadyRe"
+                        v-for="(item,index) in alreadyReply"
+                    >{{item.name}}</div>
                 </div>
 
                 <!-- 分页栏 -->
@@ -43,6 +46,7 @@
 
 <script type="text/ecmascript-6">
 import Header from '../../components/content/Header.vue';
+import { getConsults } from "network/Login.js";
 
 export default {
     components: { Header },
@@ -106,15 +110,15 @@ export default {
     border-radius: 10%;
 }
 
-.noneR{
-background-color: rgb(255, 192, 203);
+.noneR {
+    background-color: rgb(255, 192, 203);
 }
 
-.alreadyRe{
-background-color: rgb(187, 230, 214);
+.alreadyRe {
+    background-color: rgb(187, 230, 214);
 }
 
-.grades{
+.grades {
     background-color: rgb(199, 220, 251);
 }
 
