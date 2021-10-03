@@ -41,3 +41,18 @@ export function thumbArticle(data) {
 		}
 	});
 }
+
+// 打赏
+export function rewardArticle(data) {
+	return request({
+		method: 'POST',
+		url: '/rewardArticle',
+		headers: {
+			token: data.token,
+		},
+		params: {
+			id: data.id,
+			quota: data.money,
+		}
+	});
+}

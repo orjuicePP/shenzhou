@@ -164,6 +164,9 @@ export default {
                 this.$router.push(page);
             }
         },
+        getUserInfo() {
+            return { ...this.user };
+        }
     },
     async created() {
         let etData = (await getExperienceTable({
@@ -417,7 +420,7 @@ export default {
 
 .headerMain .shop {
     float: right;
-    width: 60px;
+    margin-right: 20px;
     height: 100%;
     line-height: var(--headerHeight);
     color: #333;

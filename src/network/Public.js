@@ -23,3 +23,14 @@ export function getExperienceTable(data) {
 		},
 	});
 }
+
+// 获取打赏价格表
+export function getRewardTable(data) {
+	return request({
+		method: 'GET',
+		url: '/getRewardPriceTable',
+		headers: {
+			token: data.token,
+		},
+	});
+}
