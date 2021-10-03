@@ -111,8 +111,8 @@ export default {
 
                     // 将account和token存到cookie中
                     util.setCookie({
-                        account: formName.name,
-                        token: res.data.data.token
+                        account: this.ruleForm.name,
+                        token: res.data.data.token,
                     }, 7);
 
                     // 跳转到主页

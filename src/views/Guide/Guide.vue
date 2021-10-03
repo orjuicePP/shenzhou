@@ -5,26 +5,45 @@
 
         <!-- 导航 -->
         <el-tabs type="border-card" class="tab" v-model="activeName" @tab-click="handleClick">
+            <!-- 待回复 -->
             <el-tab-pane label="待回复" name="first">
                 <div class="consults">
-                    <el-button type="text" @click="open">
-                        <div class="consult noneR" v-for="(item,index) in noneReply">{{item.name}}</div>
-                    </el-button>
+                    <div class="noneZero">暂无咨询</div>
+                    <div class="noneCons">
+                        <div class="consult noneR" v-for="(item,index) in rules.noneReply">
+                            <div class="ask">{{item.account}}:</div>
+                            <div class="problem">{{item.content}}</div>
+                            <div class="date">{{item.consultTime}}</div>
+                        </div>
+                    </div>
                 </div>
             </el-tab-pane>
 
+            <!-- 已回复 -->
             <el-tab-pane label="已回复" name="second">
                 <div class="consults">
-                    <div
-                        class="consult alreadyRe"
-                        v-for="(item,index) in alreadyReply"
-                    >{{item.name}}</div>
+                    <!-- <div class="noneZero">暂无咨询</div> -->
+                    <div class="alCons">
+                        <div class="consult alreadyRe" v-for="(item,index) in rules.alreadyReply">
+                            <div>{{item.account}}</div>
+                            <div>{{item.content}}</div>
+                            <div>{{item.consultTime}}</div>
+                        </div>
+                    </div>
                 </div>
             </el-tab-pane>
 
+            <!-- 已评分 -->
             <el-tab-pane label="已评分" name="third">
                 <div class="consults">
-                    <div class="consult grades" v-for="(item,index) in grade">{{item.name}}</div>
+                    <!-- <div class="noneZero">暂无咨询</div> -->
+                    <div class="allGrades">
+                        <div class="consult grades" v-for="(item,index) in rules.grade">
+                            <div>{{item.account}}</div>
+                            <div>{{item.content}}</div>
+                            <div>{{item.consultTime}}</div>
+                        </div>
+                    </div>
                 </div>
             </el-tab-pane>
         </el-tabs>
@@ -32,8 +51,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import Header from '../../components/content/Header.vue';
-import { getConsults } from "network/Login.js";
+import Header from 'components/content/Header.vue';
+import { getConsults, replyConsult } from "network/Guide.js";
 import util from "common/utils.js"
 window.util = util;
 
@@ -42,59 +61,86 @@ export default {
     data() {
         return {
             activeName: 'first',
-            token: util.getCookie("token"),
-            noneReply: [
-                { name: '1咨询1', index: 1 },
-                { name: '1咨询2', index: 2 },
-                { name: '1咨询3', index: 3 },
-                { name: '1咨询4', index: 4 },
-                { name: '1咨询5', index: 5 },
-                { name: '1咨询6', index: 6 },
-            ],
-            alreadyReply: [
-                { name: '2咨询1', index: 1 },
-                { name: '2咨询2', index: 2 },
-                { name: '2咨询3', index: 3 },
-                { name: '2咨询4', index: 4 },
-                { name: '2咨询5', index: 5 },
-                { name: '2咨询6', index: 6 },
-            ],
-            grade: [
-                { name: '3咨询1', index: 1 },
-                { name: '3咨询2', index: 2 },
-                { name: '3咨询3', index: 3 },
-                { name: '3咨询4', index: 4 },
-                { name: '3咨询5', index: 5 },
-                { name: '3咨询6', index: 6 },
-            ],
+            rules: {
+                id: util.getCookie("account"),
+                token: util.getCookie("token"),
+                reply: '',
+                noneReply: [
+                    { id: '1咨询1', account: 1, consultTime: 546151513, content: "吃饭了吗11111111111111111111111111111111111111111111", reply: "", score: 0, },
+                    { id: '1咨询2', account: 2, consultTime: 546151513, content: "我饿了", reply: "", score: 0, },
+                    { id: '1咨询3', account: 3, consultTime: 546151513, content: "吃饭吧", reply: "", score: 0, },
+
+                ],
+                alreadyReply: [
+                    { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
+                    { id: '1咨询2', account: 2, consultTime: 546151513, content: "shagdhabdhab", reply: "", score: 0, },
+                    { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
+                ],
+                grade: [
+                    { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
+                    { id: '1咨询2', account: 2, consultTime: 546151513, content: "shagdhabdhab", reply: "", score: 0, },
+                    { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
+                ],
+            },
         };
     },
 
     methods: {
+        // 点击切换板块
         handleClick(tab, event) {
             console.log(tab, event);
         },
-        open() {
-            this.$prompt('请输入你的回复', '提示', {
+        editCons() {
+            const h = this.$createElement;
+            this.$msgbox({
+                title: '消息',
+                message: h('p', null, [
+                    h('span', null, '123546 '),
+                ]),
+                showCancelButton: true,
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-            }).then(() => {
-                console.log(this);
-            }).catch(() => {
+            }).then(action => {
                 this.$message({
                     type: 'info',
-                    message: '取消输入'
+                    message: 'action: ' + action
                 });
             });
         },
-        async getCons(token) {
-            console.log(token);
-            const res = await getConsults();
-            console.log(res);
+        // 得到所有咨询
+        async getCons(rules) {
+            const res = await getConsults(rules);
+            let consultList = res.data.data.consultList;
+            console.log(consultList);
+
+            var none = document.querySelector('.noneZero');
+            var noneCons = document.querySelector('.noneCons');
+            if (consultList.length == 0) {  // 暂无咨询
+                none.style.display = 'block';
+                noneCons.style.display = 'none';
+            } else {
+                for (var i = 0; i < consultList.length; i++) {
+                    // 待回复
+                    if (consultList[i].stage == 1) {
+                        console.log(this.rules.noneReply);
+                        this.rules.noneReply.push(consultList[i]);
+                        // 已回复
+                    } else if (consultList[i].stage == 2) {
+                        console.log(this.rules.alreadyReply);
+                        this.rules.alreadyReply.push(consultList[i]);
+                        // 已评分
+                    } else if (consultList[i].stage == 3) {
+                        console.log(this.rules.grade);
+                        this.rules.grade.push(consultList[i]);
+                    }
+                }
+
+            }
+
         },
     },
     async created() {
-        getCons(token);
+        this.getCons(this.rules);
     },
 };
 </script>
@@ -102,17 +148,19 @@ export default {
 <style>
 .tab {
     width: var(--baseWidth);
-    margin: 10px auto;
+    margin: 20px auto;
 }
 
 .consults {
-    height: 460px;
-    margin-left: 160px;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 960px;
 }
 
 .consult {
     float: left;
-    margin-left: 100px;
+    margin-left: 50px;
+    margin-right: 50px;
     margin-bottom: 40px;
     width: 220px;
     height: 190px;
@@ -121,7 +169,7 @@ export default {
 }
 
 .noneR {
-    background-color: rgb(255, 192, 203);
+    background-color: rgb(252, 220, 223);
 }
 
 .alreadyRe {
@@ -135,5 +183,38 @@ export default {
 .pages {
     width: 450px;
     margin: 0 auto;
+}
+
+.el-tabs {
+    border-radius: 2%;
+}
+
+.noneZero {
+    display: none;
+    width: 192px;
+    font-size: 60px;
+    color: rgb(222, 225, 230);
+    letter-spacing: 36px;
+    margin: 120px auto;
+}
+
+.ask {
+    margin-top: 20px;
+    background-color: aquamarine;
+}
+
+.problem {
+    font-size: 24px;
+    height: 48px;
+    background-color: blueviolet;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.date {
+    background-color: burlywood;
 }
 </style>

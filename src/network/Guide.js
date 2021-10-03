@@ -8,7 +8,22 @@ export function getConsults(data) {
         method: 'GET',
         url: '/guide/getConsults',
         headers: {
-            token: data,
+            token: data.token,
+        },
+    });
+};
+
+// 导游答复咨询
+export function replyConsult(data) {
+    return request({
+        method: 'POST',
+        url: '/guide/replyConsult',
+        headers: {
+            token: data.token,
+        },
+        params: {
+            id: data.id,
+            reply: data.reply,
         },
     });
 };

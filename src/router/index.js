@@ -28,9 +28,9 @@ const routes = [{
         component: () => import('views/guide/Guide.vue'),
     },
     {
-        path: '/articles',
-        name: 'articles',
-        component: () => import('views/articles/Articles.vue'),
+        path: '/article',
+        name: 'article',
+        component: () => import('views/article/Article.vue'),
     },
     {
         path: '/administrator',
