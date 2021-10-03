@@ -60,7 +60,8 @@
 
 <script>
 import { status } from 'network/request.js';
-import { getOwnInfo, getExperienceTable, uploadHeadPortrait, modifyUserInfo } from 'network/Header.js';
+import { getOwnInfo, uploadHeadPortrait, modifyUserInfo } from 'network/Header.js';
+import { getExperienceTable } from 'network/Public.js';
 import eui from 'plugins/ElementUI.js';
 
 export default {
