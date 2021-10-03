@@ -11,9 +11,9 @@
                     <div class="noneZero">暂无咨询</div>
                     <div class="noneCons">
                         <div class="consult noneR" v-for="(item,index) in rules.noneReply">
-                            <div class="ask">{{item.account}}:</div>
+                            <div class="ask">{{item.name}}:</div>
                             <div class="problem">{{item.content}}</div>
-                            <div class="date">{{item.consultTime}}</div>
+                            <div class="date">{{item.date}}</div>
                         </div>
                     </div>
                 </div>
@@ -25,9 +25,9 @@
                     <!-- <div class="noneZero">暂无咨询</div> -->
                     <div class="alCons">
                         <div class="consult alreadyRe" v-for="(item,index) in rules.alreadyReply">
-                            <div>{{item.account}}</div>
-                            <div>{{item.content}}</div>
-                            <div>{{item.consultTime}}</div>
+                            <div class="ask">{{item.name}}:</div>
+                            <div class="problem">{{item.content}}</div>
+                            <div class="date">{{item.date}}</div>
                         </div>
                     </div>
                 </div>
@@ -39,9 +39,10 @@
                     <!-- <div class="noneZero">暂无咨询</div> -->
                     <div class="allGrades">
                         <div class="consult grades" v-for="(item,index) in rules.grade">
-                            <div>{{item.account}}</div>
-                            <div>{{item.content}}</div>
-                            <div>{{item.consultTime}}</div>
+                            <div class="ask">{{item.name}}:</div>
+                            <div class="problem">{{item.content}}</div>
+                            <div class="date">{{item.date}}</div>
+                            <div class="score">评分：{{item.score}}</div>
                         </div>
                     </div>
                 </div>
@@ -53,6 +54,7 @@
 <script type="text/ecmascript-6">
 import Header from 'components/content/Header.vue';
 import { getConsults, replyConsult } from "network/Guide.js";
+import { getUserInfo } from "network/Public.js";
 import util from "common/utils.js"
 window.util = util;
 
@@ -66,10 +68,9 @@ export default {
                 token: util.getCookie("token"),
                 reply: '',
                 noneReply: [
-                    { id: '1咨询1', account: 1, consultTime: 546151513, content: "吃饭了吗11111111111111111111111111111111111111111111", reply: "", score: 0, },
-                    { id: '1咨询2', account: 2, consultTime: 546151513, content: "我饿了", reply: "", score: 0, },
-                    { id: '1咨询3', account: 3, consultTime: 546151513, content: "吃饭吧", reply: "", score: 0, },
-
+                    // { id: '1咨询1', account: 1, consultTime: 546151513, content: "吃饭了吗有有有有有有有饭了吗有有有有有有有饭了吗有有有有有有有饭了吗有有有有有有有饭了吗有有有有有有有饭了吗有有有有有有有有有有有有有有有", reply: "", score: 0, },
+                    // { id: '1咨询2', account: 2, consultTime: 546151513, content: "我饿了", reply: "", score: 0, },
+                    // { id: '1咨询3', account: 3, consultTime: 546151513, content: "吃饭吧", reply: "", score: 0, },
                 ],
                 alreadyReply: [
                     { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
@@ -77,9 +78,9 @@ export default {
                     { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
                 ],
                 grade: [
-                    { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
-                    { id: '1咨询2', account: 2, consultTime: 546151513, content: "shagdhabdhab", reply: "", score: 0, },
-                    { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
+                    // { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
+                    // { id: '1咨询2', account: 2, consultTime: 546151513, content: "shagdhabdhab", reply: "", score: 0, },
+                    // { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
                 ],
             },
         };
@@ -107,11 +108,14 @@ export default {
                 });
             });
         },
+        async getName(account) {
+            return await getUserInfo({ account });
+        },
         // 得到所有咨询
         async getCons(rules) {
             const res = await getConsults(rules);
             let consultList = res.data.data.consultList;
-            console.log(consultList);
+            // console.log(consultList);
 
             var none = document.querySelector('.noneZero');
             var noneCons = document.querySelector('.noneCons');
@@ -120,18 +124,28 @@ export default {
                 noneCons.style.display = 'none';
             } else {
                 for (var i = 0; i < consultList.length; i++) {
+                    // 处理时间
+                    let date = util.getDateString(consultList[i].consultTime);
+                    consultList[i].date = date;
+
+                    // 通过account获取用户姓名
+                    const userInfo = await this.getName(consultList[i].account);
+                    let name = userInfo.data.data.username;
+                    consultList[i].name = name;
+                    // console.log(consultList);
+
                     // 待回复
-                    if (consultList[i].stage == 1) {
-                        console.log(this.rules.noneReply);
+                    if (consultList[i].stage == 0) {
                         this.rules.noneReply.push(consultList[i]);
+                        // console.log(this.rules.noneReply);
                         // 已回复
-                    } else if (consultList[i].stage == 2) {
-                        console.log(this.rules.alreadyReply);
+                    } else if (consultList[i].stage == 1) {
                         this.rules.alreadyReply.push(consultList[i]);
+                        // console.log(this.rules.alreadyReply);
                         // 已评分
-                    } else if (consultList[i].stage == 3) {
-                        console.log(this.rules.grade);
+                    } else if (consultList[i].stage == 2) {
                         this.rules.grade.push(consultList[i]);
+                        console.log(this.rules.grade);
                     }
                 }
 
@@ -158,6 +172,7 @@ export default {
 }
 
 .consult {
+    position: relative;
     float: left;
     margin-left: 50px;
     margin-right: 50px;
@@ -200,21 +215,35 @@ export default {
 
 .ask {
     margin-top: 20px;
-    background-color: aquamarine;
+    margin-left: 6px;
+    color: rgb(95, 9, 231);
 }
 
 .problem {
-    font-size: 24px;
-    height: 48px;
-    background-color: blueviolet;
+    font-size: 18px;
+    /* background-color: blueviolet; */
+    margin: 15px;
+    color: rgb(65, 78, 74);
+    /* 溢出省略号 */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
 .date {
-    background-color: burlywood;
+    position: absolute;
+    color: rgb(219, 150, 59);
+    width: 140px;
+    bottom: 33px;
+    margin-left: 5px;
+}
+
+.score {
+    position: absolute;
+    color: rgb(161, 77, 62);
+    bottom: 9px;
+    right: 5px;
 }
 </style>
