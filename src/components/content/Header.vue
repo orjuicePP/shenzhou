@@ -33,7 +33,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop" @click="toPage('/shop')">金{{user.balance}}</div>
+                <div class="shop" @click="toPage('/shop')">
+                    <span class="iconfont icon-dashang">&nbsp;</span>
+                    <span class="text">{{user.balance}}</span>
+                </div>
                 <div v-if="user.isAdmin" class="admin" @click="toPage('/administrator')">管理员页</div>
                 <div v-if="user.isGuide" class="guide" @click="toPage('/guide')">导游页</div>
             </div>
@@ -423,11 +426,19 @@ export default {
     margin-right: 20px;
     height: 100%;
     line-height: var(--headerHeight);
-    color: #333;
     cursor: pointer;
 }
 
-.headerMain .shop:hover {
+.headerMain .shop .iconfont {
+    font-size: 20px;
+    color: #fece0a;
+}
+
+.headerMain .shop .text {
+    color: #333;
+}
+
+.headerMain .shop .text:hover {
     color: #ff5c38;
 }
 

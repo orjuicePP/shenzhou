@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style>
-@import url("//at.alicdn.com/t/font_2847850_gsla7ywan2m.css");
+@import url("//at.alicdn.com/t/font_2847850_71inw3sb2qm.css");
 #app {
     --baseWidth: 1280px;
     --headerHeight: 60px;
