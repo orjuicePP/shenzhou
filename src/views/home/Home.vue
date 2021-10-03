@@ -1,10 +1,17 @@
 <template>
-    <div>home</div>
+    <div>
+        <!-- 头部导航栏 -->
+        <Header></Header>
+    </div>
 </template>
 
 <script>
-export default {
+import Header from '../../components/content/Header.vue';
+import util from "common/utils.js"
+window.util = util;
 
+export default {
+    components: { Header },
 }
 </script>
 

@@ -56,7 +56,6 @@ import { status } from 'network/request.js';
 import { getArticleInfo, getRandomArticle, thumbArticle } from 'network/Article.js';
 import { getUserInfo } from 'network/Public.js';
 export default {
-    name: 'Article',
     data() {
         return {
             articleId: '',
