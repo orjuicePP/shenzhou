@@ -10,7 +10,11 @@
                 <div class="consults">
                     <div class="noneZero">暂无咨询</div>
                     <div class="noneCons">
-                        <div class="consult noneR" v-for="(item,index) in rules.noneReply">
+                        <div
+                            class="consult noneR"
+                            v-for="(item,index) in rules.noneReply"
+                            @click="dialogFormVisible = true;getC(item)"
+                        >
                             <div class="ask">{{item.name}}:</div>
                             <div class="problem">{{item.content}}</div>
                             <div class="date">{{item.date}}</div>
@@ -24,7 +28,11 @@
                 <div class="consults">
                     <!-- <div class="noneZero">暂无咨询</div> -->
                     <div class="alCons">
-                        <div class="consult alreadyRe" v-for="(item,index) in rules.alreadyReply">
+                        <div
+                            class="consult alreadyRe"
+                            v-for="(item,index) in rules.alreadyReply"
+                            @click="dialogVisible = true;getAn(item)"
+                        >
                             <div class="ask">{{item.name}}:</div>
                             <div class="problem">{{item.content}}</div>
                             <div class="date">{{item.date}}</div>
@@ -38,7 +46,11 @@
                 <div class="consults">
                     <!-- <div class="noneZero">暂无咨询</div> -->
                     <div class="allGrades">
-                        <div class="consult grades" v-for="(item,index) in rules.grade">
+                        <div
+                            class="consult grades"
+                            v-for="(item,index) in rules.grade"
+                            @click="dialogVisibles = true;getAn(item)"
+                        >
                             <div class="ask">{{item.name}}:</div>
                             <div class="problem">{{item.content}}</div>
                             <div class="date">{{item.date}}</div>
@@ -49,23 +61,47 @@
             </el-tab-pane>
         </el-tabs>
 
-        <!-- 遮罩层 -->
-        <div class="mask"></div>
-        <!-- 输入框 -->
-        <div class="write">
-            <div class="title">请回答：</div>
-            <div class="el">
-                <el-input
-                    type="textarea"
-                    placeholder="请输入内容"
-                    v-model="textarea"
-                    maxlength="100"
-                    show-word-limit
-                ></el-input>
+        <!-- 回复咨询对话框 -->
+        <el-dialog title="回答" :visible.sync="dialogFormVisible">
+            <!-- 表单 -->
+            <el-form :model="form">
+                <el-form-item>
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+
+            <!-- 按钮 -->
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false;submit()">确 定</el-button>
             </div>
-            <el-button type="info" @click="clean">取消</el-button>
-            <el-button type="primary">确定</el-button>
-        </div>
+        </el-dialog>
+
+        <!-- 查看回答对话框 -->
+        <el-dialog
+            title="你的回答"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose"
+        >
+            <span class="getAnswer">{{re}}</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 查看回答&评分对话框 -->
+        <el-dialog
+            title="你的回答"
+            :visible.sync="dialogVisibles"
+            width="30%"
+            :before-close="handleClose"
+        >
+            <span>{{re}}</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogVisibles = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -80,7 +116,19 @@ export default {
     components: { Header },
     data() {
         return {
-            textarea: '',
+            re: '',
+            answer: '',
+            dialogFormVisible: false,
+            dialogVisibles: false,
+            dialogVisible: false,
+            form: {
+                name: '',
+                region: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
             activeName: 'first',
             rules: {
                 id: util.getCookie("account"),
@@ -106,8 +154,12 @@ export default {
     },
 
     methods: {
-        clean() {
-            textarea = '';
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => { });
         },
         // 点击切换板块
         handleClick(tab, event) {
@@ -116,6 +168,7 @@ export default {
         async getName(account) {
             return await getUserInfo({ account });
         },
+
         // 得到所有咨询
         async getCons(rules) {
             const res = await getConsults(rules);
@@ -146,17 +199,56 @@ export default {
                         // 已回复
                     } else if (consultList[i].stage == 1) {
                         this.rules.alreadyReply.push(consultList[i]);
-                        console.log(this.rules.alreadyReply);
+                        // console.log(this.rules.alreadyReply);
                         // 已评分
                     } else if (consultList[i].stage == 2) {
                         this.rules.grade.push(consultList[i]);
-                        console.log(this.rules.grade);
+                        // console.log(this.rules.grade);
                     }
                 }
 
             }
 
         },
+
+        // 获取点击的数组对象
+        getC(item) {
+            this.answer = item;
+            // console.log(this.answer.reply);
+        },
+
+        // 提交表单
+        async submit() {
+            // 获取表单里的值
+            let res = this.form.name;
+
+            // 调用接口 改变数据
+            let da = {
+                token: this.rules.token,
+                id: this.rules.id,
+                reply: res,
+            };
+            const r = await replyConsult(da);
+            console.log(r);
+            // 填充回答
+            // this.answer.reply = res;
+            // console.log(this.answer.reply);
+
+            // 改变状态
+            // this.answer.stage = 1;
+            // console.log(this.answer.stage);
+
+            // 清空表单
+            this.form.name = "";
+
+            // 刷新页面
+            location.reload();
+        },
+
+        // 获取回复渲染至对话框
+        getAn(item) {
+            this.re = item.reply;
+        }
     },
     async created() {
         this.getCons(this.rules);
