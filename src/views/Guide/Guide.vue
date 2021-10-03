@@ -48,6 +48,24 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
+
+        <!-- 遮罩层 -->
+        <div class="mask"></div>
+        <!-- 输入框 -->
+        <div class="write">
+            <div class="title">请回答：</div>
+            <div class="el">
+                <el-input
+                    type="textarea"
+                    placeholder="请输入内容"
+                    v-model="textarea"
+                    maxlength="100"
+                    show-word-limit
+                ></el-input>
+            </div>
+            <el-button type="info" @click="clean">取消</el-button>
+            <el-button type="primary">确定</el-button>
+        </div>
     </div>
 </template>
 
@@ -62,6 +80,7 @@ export default {
     components: { Header },
     data() {
         return {
+            textarea: '',
             activeName: 'first',
             rules: {
                 id: util.getCookie("account"),
@@ -73,9 +92,9 @@ export default {
                     // { id: '1咨询3', account: 3, consultTime: 546151513, content: "吃饭吧", reply: "", score: 0, },
                 ],
                 alreadyReply: [
-                    { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
-                    { id: '1咨询2', account: 2, consultTime: 546151513, content: "shagdhabdhab", reply: "", score: 0, },
-                    { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
+                    // { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
+                    // { id: '1咨询2', account: 2, consultTime: 546151513, content: "shagdhabdhab", reply: "", score: 0, },
+                    // { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
                 ],
                 grade: [
                     // { id: '1咨询1', account: 1, consultTime: 546151513, content: "sndbsjkbdjksbdj", reply: "", score: 0, },
@@ -87,26 +106,12 @@ export default {
     },
 
     methods: {
+        clean() {
+            textarea = '';
+        },
         // 点击切换板块
         handleClick(tab, event) {
             console.log(tab, event);
-        },
-        editCons() {
-            const h = this.$createElement;
-            this.$msgbox({
-                title: '消息',
-                message: h('p', null, [
-                    h('span', null, '123546 '),
-                ]),
-                showCancelButton: true,
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-            }).then(action => {
-                this.$message({
-                    type: 'info',
-                    message: 'action: ' + action
-                });
-            });
         },
         async getName(account) {
             return await getUserInfo({ account });
@@ -141,7 +146,7 @@ export default {
                         // 已回复
                     } else if (consultList[i].stage == 1) {
                         this.rules.alreadyReply.push(consultList[i]);
-                        // console.log(this.rules.alreadyReply);
+                        console.log(this.rules.alreadyReply);
                         // 已评分
                     } else if (consultList[i].stage == 2) {
                         this.rules.grade.push(consultList[i]);
@@ -160,6 +165,43 @@ export default {
 </script>
 
 <style>
+.el-button {
+    margin-left: 340px;
+}
+.write {
+    background-color: #fff;
+    position: fixed;
+    top: 200px;
+    left: 500px;
+    width: calc(100% - 1000px);
+    height: calc(100% - 400px);
+    z-index: 3;
+    border-radius: 5px;
+}
+
+.title {
+    font-size: 20px;
+    /* background-color: blue; */
+    margin: 30px;
+    color: rgb(60, 64, 67);
+}
+
+.write .el {
+    margin: 50px;
+    background-color: aquamarine;
+}
+
+.mask {
+    background-color: #000;
+    opacity: 0.3;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
 .tab {
     width: var(--baseWidth);
     margin: 20px auto;
