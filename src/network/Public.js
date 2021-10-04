@@ -11,7 +11,7 @@ export function getUserInfo(data) {
 			account: data.account,
 		}
 	});
-}
+};
 
 // 获取经验等级对照表
 export function getExperienceTable(data) {
@@ -22,7 +22,7 @@ export function getExperienceTable(data) {
 			token: data.token,
 		},
 	});
-}
+};
 
 // 获取打赏价格表
 export function getRewardTable(data) {
@@ -33,7 +33,7 @@ export function getRewardTable(data) {
 			token: data.token,
 		},
 	});
-}
+};
 
 // 获取背景图URL
 export function getPhotoUrl(url) {
@@ -46,4 +46,34 @@ export function getPhotoUrl(url) {
 	} else {
 		return null;
 	}
-}
+};
+
+// 上传图片
+export function uploadPhoto(data) {
+	let formData = new FormData();
+	formData.append('file', data.file);
+	return request({
+		method: 'POST',
+		url: '/uploadPicture',
+		headers: {
+			token: data.token,
+		},
+		data: formData,
+	});
+};
+
+// 重新上传图片
+export function reUploadPhoto(data) {
+	let formData = new FormData();
+	formData.append('file', data.file);
+	formData.append('id', data.id);
+	return request({
+		method: 'POST',
+		url: '/reUploadPicture',
+		headers: {
+			token: data.token,
+		},
+		data: formData,
+	});
+};
+
