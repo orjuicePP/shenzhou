@@ -1,5 +1,5 @@
 import {
-	request
+	request, status
 } from './request.js';
 
 // 获取用户信息
@@ -33,4 +33,17 @@ export function getRewardTable(data) {
 			token: data.token,
 		},
 	});
+}
+
+// 获取背景图URL
+export function getPhotoUrl(url) {
+	if (url != null) {
+		let pre = '/file?url=';
+		if (status == 'build') {
+			pre = '/api' + pre;
+		}
+		return 'url(' + pre + url + '&random=' + parseInt(Math.random() * 100000000) + ')';
+	} else {
+		return null;
+	}
 }

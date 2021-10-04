@@ -69,9 +69,8 @@
 
 <script>
 import Header from 'components/content/Header.vue';
-import { status } from 'network/request.js';
 import { getArticleInfo, getRandomArticle, thumbArticle, rewardArticle } from 'network/Article.js';
-import { getUserInfo, getRewardTable } from 'network/Public.js';
+import { getUserInfo, getRewardTable, getPhotoUrl } from 'network/Public.js';
 import eui from 'plugins/ElementUI.js';
 
 export default {
@@ -189,25 +188,13 @@ export default {
     computed: {
         getArticleBG() {
             if (this.article.photoUrl != null) {
-                let pre = '/file?url=';
-                if (status == 'build') {
-                    pre = '/api' + pre;
-                }
-                return { backgroundImage: 'url(' + pre + this.article.photoUrl + '&random=' + parseInt(Math.random() * 100000000) + ')' };
+                return { backgroundImage: getPhotoUrl(this.article.photoUrl) };
             } else {
                 return { backgroundColor: '#fff' };
             }
         },
         getAuthorHP() {
-            if (this.author.headPortraitUrl) {
-                let pre = '/file?url=';
-                if (status == 'build') {
-                    pre = '/api' + pre;
-                }
-                return { backgroundImage: 'url(' + pre + this.author.headPortraitUrl + '&random=' + parseInt(Math.random() * 100000000) + ')' };
-            } else {
-                return null;
-            }
+            return { backgroundImage: getPhotoUrl(this.author.headPortraitUrl) };
         },
         getThumbColor() {
             return this.thumbed ? '#ff5c38' : '#666';
