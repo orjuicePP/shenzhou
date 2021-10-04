@@ -52,17 +52,7 @@
                         </el-form-item>
 
                         <!-- 上传图片 -->
-                        <el-form-item label="上传图片" :label-width="formLabelWidth">
-                            <el-upload
-                              action="https://jsonplaceholder.typicode.com/posts/"
-                              
-                                :on-change="handelOnChange"
-                                :file-list="fileList"
-                            >
-                                <button>点击上传</button>
-                            </el-upload>
-                            <img v-if="audioUrl" :src="audioUrl" controls></img>
-                        </el-form-item>
+                        <el-form-item label="上传图片" :label-width="formLabelWidth"></el-form-item>
                     </el-form>
 
                     <!-- 按钮 -->
@@ -92,15 +82,14 @@
 
             <!-- 内容 -->
             <div class="tourContent">
-                <div class="box">
-                    <span>大学英语词汇解析</span>
-                    <div class="coll">
-                        <p>华中科技大学</p>
-                    </div>
-                    <div class="number">
-                        <div class="real">117375</div>
-                        <div class="people"></div>
-                    </div>
+                <div class="box" v-for="(item,index) in articles">
+                    <h3>{{item.title}}</h3>
+                    <span class="boxProvince">{{item.province}}</span>
+                    <span class="boxPlace">{{item.placeName}}</span>
+                    <span class="boxAuthor">{{item.authorAccount}}</span>
+                    <span class="boxContent">{{item.content}}</span>
+                    <span class="boxTime">{{item.releaseTime}}</span>
+                    <span class="boxThumb">{{item.thumb}}</span>
                 </div>
             </div>
         </div>
@@ -108,17 +97,65 @@
         <!-- 导游 -->
         <div class="homeGuide">
             <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-                <el-tab-pane label="名气导游" name="first">名气导游</el-tab-pane>
+                <!-- 名气导游 -->
+                <el-tab-pane label="名气导游" name="first">
+                    <div
+                        class="guideBox"
+                        v-for="(item,index) in guides"
+                        @click="dialogFormVisible2 = true"
+                    >
+                        <h3>{{item.name}}</h3>
+                        <p>{{item.brief}}</p>
+                        <span>评分：{{item.score}}</span>
+                    </div>
+                </el-tab-pane>
+
+                <!-- 向导游发起咨询对话框 -->
+                <el-dialog title="向导游发起咨询" :visible.sync="dialogFormVisible2">
+                    <el-form :model="form2">
+                        <el-form-item label="请输入你的问题" :label-width="formLabelWidth">
+                            <el-input v-model="form2.name" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                        <el-button type="primary" @click="dialogFormVisible2 = false">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <!-- 我的咨询 -->
                 <el-tab-pane label="我的咨询" name="second">我的咨询</el-tab-pane>
             </el-tabs>
         </div>
 
         <!-- 一起游 -->
-        <div class="together">一起游</div>
+        <div class="together">
+            <div class="tourTop">
+                <!-- 标题 -->
+                <h1 class="title">一起游</h1>
+
+                <!-- 筛选器 -->
+                <div class="select">
+                    <el-dropdown>
+                        <el-button
+                            type="primary"
+                            style="background-color: rgb(244, 243, 244); border-color: rgb(244, 243, 244); color: black"
+                        >
+                            筛选条件
+                            <i class="el-icon-arrow-down el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>省份</el-dropdown-item>
+                            <el-dropdown-item>人数</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+            </div>
+        </div>
 
         <!-- 页脚 -->
         <div class="footer">
-            <div></div>
+            <div class="footerCon"></div>
         </div>
 
         <!-- 回到顶部 -->
@@ -129,7 +166,7 @@
 <script>
 import Header from 'components/content/Header.vue';
 import ElementUI from "plugins/ElementUI.js";
-import { getArticle, releaseArticle } from "network/Home.js";
+import { getArticles, releaseArticle } from "network/Home.js";
 import util from "common/utils.js"
 window.util = util;
 
@@ -155,9 +192,39 @@ export default {
                 pictureId: '',
             },
             formLabelWidth: '120px',
-            uploadUrl: "", // 上传录音请求URL
-            audioUrl: "", //录音的URL
-            fileList: [],
+            // 向导游发起咨询
+            dialogFormVisible2: false,
+            form2: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            // 一些测试数据
+            articles: [
+                { id: 1, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+                { id: 2, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+                { id: 3, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+                { id: 4, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+                { id: 5, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+                { id: 6, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+            ],
+            guides: [
+                { id: 1, name: '导游1', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 2, name: '导游2', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 3, name: '导游3', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 4, name: '导游4', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 5, name: '导游5', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 6, name: '导游6', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 7, name: '导游7', brief: '啦啦啦我好困不想做了', score: 100 },
+            ],
+            to: [
+                {},
+            ],
         };
     },
 
@@ -165,9 +232,9 @@ export default {
         handleClick(tab, event) {
             console.log(tab, event);
         },
-        handleClick() {
-            alert('button click');
-        },
+        // handleClick() {
+        //     alert('button click');
+        // },
         // 发布文章
         async submit() {
             // 获取表单里的值 调用接口
@@ -185,20 +252,9 @@ export default {
             // 刷新页面
             // location.reload();
         },
-        handelOnChange(res, file) {
-            if(res){
-                console.log(file);
-            }
-            console.log(file);
-            // if (res) {
-            //     var reader = new FileReader();
-            //     reader.readAsDataURL(res.raw);
-            //     // reader.onload = (e) => {
-            //     //     this.audioUrl = reader.result;
-            //     // };
-            // }
-            // this.fileList = [file[file.length - 1]];
-            // console.log(this.fileList);
+        // 获取上传的文件
+        getFile(event) {
+
         },
     }
 }
@@ -225,12 +281,7 @@ export default {
 .homeGuide,
 .together {
     background-color: pink;
-    height: 390px;
-}
-
-.footer {
-    height: 180px;
-    background-color: rgb(252, 247, 175);
+    height: 465px;
 }
 
 /* 图片铺满 */
@@ -240,6 +291,7 @@ export default {
 }
 
 .tourTop {
+    position: relative;
     overflow: hidden;
     background-color: blueviolet;
 }
@@ -256,8 +308,9 @@ export default {
 }
 
 .select {
+    position: absolute;
     float: left;
-    margin-left: 978px;
+    right: 0;
 }
 
 .el-dropdown {
@@ -273,72 +326,128 @@ export default {
 }
 
 .tourContent {
-    height: 200px;
-    margin-top: 20px;
-    background-color: blueviolet;
+    height: 420px;
+    /* margin-top: 20px; */
+    background-color: saddlebrown;
 }
 
+/* 文章part */
 .box {
+    position: relative;
     float: left;
     width: 236px;
-    height: 198px;
-    margin-left: 20px;
+    height: 188px;
+    /* margin: 0 42px; */
+    margin-left: 42px;
+    margin-right: 42px;
+    margin-top: 20px;
     background-color: white;
+    border-radius: 5px;
 }
 
-.box span {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    color: #000;
-    font-size: 14px;
-    font-weight: normal;
-    width: 223px;
-    height: 22px;
-    line-height: 22px;
-    padding-left: 13px;
+.box h3 {
+    margin-bottom: 7px;
 }
-.box img {
-    width: 236px;
-    height: 139px;
-}
-.box .coll {
-    width: 152px;
-    height: 17px;
-    display: block;
-    float: left;
-    margin-top: 8px;
-    margin-left: 13px;
-}
-.box .coll p {
-    font-size: 12px;
-    height: 17px;
-    line-height: 17px;
-    color: rgb(153, 153, 153);
-}
-.box .number {
-    width: 65px;
-    height: 17px;
-    float: right;
-    margin-top: 8px;
-    margin-right: 5px;
-}
-.number .people {
-    width: 15px;
-    height: 14px;
-    float: right;
-    /* background-image: url(../img/sprite/sprite.png); */
-    background-size: 90px;
-    background-position: 0 0;
-}
-.number .real {
-    text-align: right;
+
+.boxProvince {
     margin-left: 5px;
-    float: right;
-    font-size: 12px;
-    height: 17px;
-    line-height: 17px;
-    color: rgb(153, 153, 153);
+    padding: 0 5px;
+    background-color: darksalmon;
+    border-radius: 5px;
+}
+
+.boxPlace {
+    margin-left: 5px;
+    padding: 0 5px;
+    background-color: aquamarine;
+    border-radius: 5px;
+}
+
+.boxAuthor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 14px;
+    color: rgb(227, 227, 227);
+    background-color: darkviolet;
+}
+
+.boxContent {
+    font-size: 16px;
+    margin-top: 10px;
+    background-color: aqua;
+    /* 省略文本 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.boxTime {
+    position: absolute;
+    bottom: 10px;
+    background-color: rgb(252, 247, 175);
+    border-radius: 5px;
+}
+
+.boxThumb {
+    position: absolute;
+    right: 0;
+    bottom: 30px;
+    background-color: royalblue;
+}
+
+/* 导游part */
+.guideBox {
+    position: relative;
+    float: left;
+    width: 200px;
+    height: 150px;
+    background-color: white;
+    border-radius: 5px;
+    margin: 20px 28px;
+}
+
+.guideBox h3 {
+    text-align: center;
+    background-color: saddlebrown;
+}
+
+.guideBox p {
+    margin: 10px 5px;
+    height: 64px;
+    background-color: saddlebrown;
+    /* 省略文本 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.guideBox span {
+    position: absolute;
+    right: 0;
+    margin-top: 10px;
+    background-color: saddlebrown;
+}
+
+/* 一起游 */
+.together {
+    height: 200px;
+}
+
+/* 页脚 */
+.footer {
+    height: 180px;
+    background-color: rgb(252, 247, 175);
+}
+
+.footerCon {
+    width: var(--baseWidth);
+    height: 180px;
+    margin: auto;
+    background-color: salmon;
 }
 </style>

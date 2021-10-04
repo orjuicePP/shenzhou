@@ -2,16 +2,14 @@ import {
     request
 } from './request.js';
 
-// 获取文章信息
-export function getArticle(data) {
+// 批量获取文章信息（渲染）
+export function getArticles(data) {
     return request({
         method: 'GET',
-        url: '/getArticle',
-        headers: {
-            token: data.token,
-        },
+        url: '/public/getArticles',
         params: {
-           id: data.id,
+            page: data.page,
+            province: data.province,
         },
     });
 };
