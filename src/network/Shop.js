@@ -37,7 +37,7 @@ export function addExchangeGift(data) {
 		},
 		params: {
 			gid: data.gid,
-			addess: data.address,
+			address: data.address,
 		}
 	});
 }

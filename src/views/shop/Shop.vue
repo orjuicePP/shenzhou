@@ -23,15 +23,24 @@
             </div>
         </div>
         <Tips ref="tips"></Tips>
+        <Dialog v-if="dialogStatus">
+            <div class="dialogRoot">
+                <div class="text">地址：</div>
+                <input type="text" v-model="address" />
+                <div class="submit beforeBtn" @click="exchangeSubmit">提交</div>
+            </div>
+        </Dialog>
     </div>
 </template>
 
 <script>
 import Header from 'components/content/Header.vue';
 import Tips from 'components/content/Tips.vue';
+import Dialog from 'components/content/Dialog.vue';
 import { getAllGift, getGiftInfo, addExchangeGift } from 'network/Shop.js';
 import { getPhotoUrl } from 'network/Public.js';
 import { getOwnInfo } from 'network/Header.js';
+import eui from 'plugins/ElementUI.js';
 
 export default {
     name: 'Shop',
@@ -41,11 +50,15 @@ export default {
             user: {
                 isAdmin: false,
             },
+            dialogStatus: false,
+            address: '',
+            nowGift: null,
         };
     },
     components: {
         Header,
         Tips,
+        Dialog,
     },
     methods: {
         async loadGift() {
@@ -75,12 +88,28 @@ export default {
                 content: '确定要兑换礼品' + item.name + '吗',
                 submit: '确定',
                 close: '取消'
-            }, async function () {
-                // let res = (await addExchangeGift({
-
-                // })).data;
-                console.log(item);
+            }, () => {
+                if (item.price > this.user.balance) {
+                    eui.Message.error('你钱不够');
+                } else {
+                    this.dialogStatus = true;
+                    this.nowGift = item;
+                }
             });
+        },
+        async exchangeSubmit() {
+            this.dialogStatus = false;
+            let res = (await addExchangeGift({
+                token: util.getCookie('token'),
+                gid: this.nowGift.id,
+                address: this.address
+            })).data;
+            console.log(res);
+            if (res.flag) {
+                location.reload();
+            } else {
+                eui.Message.error(res.message);
+            }
         }
     },
     created() {
@@ -206,5 +235,35 @@ export default {
 
 .main > .content > ul > li > .delete:hover {
     color: #ff5c38;
+}
+
+.dialogRoot {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+    height: 40px;
+    margin-top: 30px;
+}
+
+.dialogRoot .text {
+    width: 50px;
+    text-align: right;
+    line-height: 40px;
+}
+
+.dialogRoot input {
+    flex: 1;
+    padding: 0px 10px;
+}
+
+.dialogRoot .submit {
+    position: relative;
+    width: 60px;
+    line-height: 40px;
+    text-align: center;
+    color: #fff;
+    background-color: #666;
+    cursor: pointer;
 }
 </style>
