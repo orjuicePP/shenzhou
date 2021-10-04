@@ -40,4 +40,35 @@ export function addExchangeGift(data) {
 			address: data.address,
 		}
 	});
-}
+};
+
+// 添加礼品
+export function addGift(data) {
+	return request({
+		method: 'POST',
+		url: '/admin/addGift',
+		headers: {
+			token: data.token,
+		},
+		params: {
+			name: data.name,
+			describe: data.describe,
+			price: data.price,
+			pictureId: data.pictureId,
+		}
+	});
+};
+
+// 删除礼品
+export function removeGift(data) {
+	return request({
+		method: 'GET',
+		url: '/admin/removeGift',
+		headers: {
+			token: data.token,
+		},
+		params: {
+			id: data.id,
+		}
+	});
+};

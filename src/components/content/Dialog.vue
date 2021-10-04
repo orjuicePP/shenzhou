@@ -1,6 +1,6 @@
 <template>
     <div class="DialogRoot">
-        <div class="dialogBox">
+        <div class="dialogBox" :style="style">
             <slot></slot>
         </div>
         <div class="transparent"></div>
@@ -14,10 +14,16 @@ export default {
         return {
             status: false,
             callback: null,
+            style: {},
         };
     },
-    props: [],
+    props: ['config'],
     methods: {
+    },
+    created() {
+        if (this.config != null) {
+            this.style = this.config.style;
+        }
     }
 }
 </script>
