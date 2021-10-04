@@ -47,10 +47,10 @@ export default {
         return {
             activeName: 'first',
             imgList: [
-                { id: 0, idView: require("assets/img/one.png") },
-                { id: 1, idView: require("assets/img/one.png") },
-                { id: 2, idView: require("assets/img/one.png") },
-                { id: 3, idView: require("assets/img/one.png") },
+                { id: 0, idView: require("assets/img/run1.png") },
+                { id: 1, idView: require("assets/img/run2.png") },
+                { id: 2, idView: require("assets/img/run3.png") },
+                { id: 3, idView: require("assets/img/run4.png") },
             ],
         };
     },
@@ -90,5 +90,11 @@ export default {
 .footer {
     height: 180px;
     background-color: yellowgreen;
+}
+
+/* 图片铺满 */
+.image {
+    min-width: 100%;
+    min-height: 100%;
 }
 </style>
