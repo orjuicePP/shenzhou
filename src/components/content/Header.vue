@@ -4,12 +4,12 @@
             <div class="headerMain">
                 <div class="logo" @click="toPage('/home')"></div>
                 <div class="userInfo">
-                    <div class="photo" :style="{backgroundImage: `url('${hpUrl}')`}"></div>
+                    <div class="photo" :style="{backgroundImage: hpUrl}"></div>
                     <div class="username">{{user.username}}</div>
                     <div class="otherInfo">
                         <i></i>
                         <div class="baseInfo">
-                            <div class="left" :style="{backgroundImage: `url('${hpUrl}')`}">
+                            <div class="left" :style="{backgroundImage: hpUrl}">
                                 <div class="upload">
                                     <span>更换</span>
                                     <input type="file" ref="file" @change="uploadHP" />
@@ -33,7 +33,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop" @click="toPage('/shop')">金{{user.balance}}</div>
+                <div class="shop" @click="toPage('/shop')">
+                    <span class="iconfont icon-dashang">&nbsp;</span>
+                    <span class="text">{{user.balance}}</span>
+                </div>
                 <div v-if="user.isAdmin" class="admin" @click="toPage('/administrator')">管理员页</div>
                 <div v-if="user.isGuide" class="guide" @click="toPage('/guide')">导游页</div>
             </div>
@@ -59,9 +62,8 @@
 </template>
 
 <script>
-import { status } from 'network/request.js';
 import { getOwnInfo, uploadHeadPortrait, modifyUserInfo } from 'network/Header.js';
-import { getExperienceTable } from 'network/Public.js';
+import { getExperienceTable, getPhotoUrl } from 'network/Public.js';
 import eui from 'plugins/ElementUI.js';
 
 export default {
@@ -94,15 +96,7 @@ export default {
             return this.experienceTable[this.user.level - 1];
         },
         hpUrl() {
-            if (this.user.headPortraitUrl != null) {
-                let pre = '/file?url=';
-                if (status == 'build') {
-                    pre = '/api' + pre;
-                }
-                return pre + this.user.headPortraitUrl + '&random=' + parseInt(Math.random() * 100000000);
-            } else {
-                return null;
-            }
+            return getPhotoUrl(this.user.headPortraitUrl);
         }
     },
     methods: {
@@ -110,15 +104,8 @@ export default {
             let infoData = (await getOwnInfo({
                 token: util.getCookie('token')
             })).data;
+			this.user = infoData.data;
             this.user.account = util.getCookie('account');
-            this.user.username = infoData.data.username;
-            this.user.experience = infoData.data.experience;
-            this.user.headPortraitUrl = infoData.data.headPortraitUrl;
-            this.user.level = infoData.data.level;
-            this.user.other = infoData.data.other;
-            this.user.balance = infoData.data.balance;
-            this.user.isGuide = infoData.data.isGuide;
-            this.user.isAdmin = infoData.data.isAdmin;
         },
         getExpPercentage() {
             return this.user.experience / this.expLimit * 100;
@@ -164,6 +151,9 @@ export default {
                 this.$router.push(page);
             }
         },
+        getUserInfo() {
+            return { ...this.user };
+        }
     },
     async created() {
         let etData = (await getExperienceTable({
@@ -182,7 +172,7 @@ export default {
     height: var(--headerHeight);
     position: fixed;
     z-index: 100;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.95);
 }
 
 .headerMain {
@@ -200,7 +190,7 @@ export default {
     background-image: url("~assets/img/logo.png");
     background-repeat: no-repeat;
     background-size: 84%;
-    background-position: center center;
+    background-position: left center;
     cursor: pointer;
 }
 
@@ -417,14 +407,22 @@ export default {
 
 .headerMain .shop {
     float: right;
-    width: 60px;
+    margin-right: 20px;
     height: 100%;
     line-height: var(--headerHeight);
-    color: #333;
     cursor: pointer;
 }
 
-.headerMain .shop:hover {
+.headerMain .shop .iconfont {
+    font-size: 20px;
+    color: #fece0a;
+}
+
+.headerMain .shop .text {
+    color: #333;
+}
+
+.headerMain .shop .text:hover {
     color: #ff5c38;
 }
 

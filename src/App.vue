@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style>
-@import url("//at.alicdn.com/t/font_2847850_i16r5vbc7nk.css");
+@import url("//at.alicdn.com/t/font_2847850_lhjxeomyfcq.css");
 #app {
     --baseWidth: 1280px;
     --headerHeight: 60px;
@@ -29,5 +29,20 @@ export default {
 
 body {
     background-color: #e3e3e3;
+}
+
+.beforeBtn::before {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: inherit;
+    content: "";
+}
+
+.beforeBtn:hover::before {
+    display: none;
 }
 </style>

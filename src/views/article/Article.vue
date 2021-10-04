@@ -1,6 +1,6 @@
 <template>
     <div class="ArticleRoot">
-        <Header></Header>
+        <Header ref="header"></Header>
         <div class="main">
             <div class="left">
                 <div v-if="!photoStatus" class="core" @click="changePhotoStatus">
@@ -9,6 +9,10 @@
                     <div class="time">{{article.time}}</div>
                 </div>
                 <div class="photo" :style="getArticleBG" @click="changePhotoStatus"></div>
+                <div v-if="!photoStatus" class="reward" @click="rewardData.status = true">
+                    <div class="btn iconfont icon-dashang"></div>
+                    <div class="text">打赏</div>
+                </div>
                 <div
                     v-if="!photoStatus"
                     class="thumb"
@@ -36,7 +40,11 @@
                 <div class="otherArticle">
                     <p>猜你喜欢</p>
                     <ul>
-                        <li v-for="item in like">
+                        <li
+                            v-for="item in like"
+                            :style="{backgroundColor: item.bgc}"
+                            @click="toOtherArticle(item)"
+                        >
                             <div class="title">{{item.title}}</div>
                             <div class="placeName">{{item.placeName}}</div>
                             <div class="province">{{item.province}}</div>
@@ -47,14 +55,24 @@
                 </div>
             </div>
         </div>
+        <div class="rewardBox" v-if="rewardData.status">
+            <div class="close iconfont icon-icon_close" @click="rewardData.status = false"></div>
+            <div class="content">
+                <div class="title">金额</div>
+                <div class="price" @click="changeRewardPrice">{{rewardTable[rewardData.priceIndex]}}</div>
+                <div class="submit" @click="rewardSubmit">打赏</div>
+            </div>
+        </div>
+        <div class="transparent" v-if="rewardData.status"></div>
     </div>
 </template>
 
 <script>
 import Header from 'components/content/Header.vue';
-import { status } from 'network/request.js';
-import { getArticleInfo, getRandomArticle, thumbArticle } from 'network/Article.js';
-import { getUserInfo } from 'network/Public.js';
+import { getArticleInfo, getRandomArticle, thumbArticle, rewardArticle } from 'network/Article.js';
+import { getUserInfo, getRewardTable, getPhotoUrl } from 'network/Public.js';
+import eui from 'plugins/ElementUI.js';
+
 export default {
     data() {
         return {
@@ -64,6 +82,11 @@ export default {
             like: [],
             photoStatus: false,
             thumbed: false,
+            rewardTable: [],
+            rewardData: {
+                status: false,
+                priceIndex: 0
+            },
         };
     },
     components: {
@@ -85,7 +108,6 @@ export default {
             this.author = (await getUserInfo({
                 account
             })).data.data;
-            console.log(this.author);
         },
         async loadLike() {
             let arr = (await getRandomArticle({
@@ -94,12 +116,21 @@ export default {
             for (let art of arr) {
                 if (art.id != this.articleId) {
                     art.time = util.getDateString(art.releaseTime);
+                    art.bgc = util.randomColor(230, 250);
                     this.like.push(art);
                 }
             }
         },
+        async loadRewordTable() {
+            let res = (await getRewardTable({
+                token: util.getCookie('token'),
+            })).data.data;
+            this.rewardTable = res.priceList;
+        },
         changePhotoStatus() {
-            this.photoStatus = !this.photoStatus;
+            if (this.article.photoUrl != null) {
+                this.photoStatus = !this.photoStatus;
+            }
         },
         thumbClick() {
             if (!this.article.isThumb) {
@@ -122,26 +153,48 @@ export default {
             if (!res.flag) {
                 eui.Message.error(res.message);
             }
+        },
+        toOtherArticle(item) {
+            this.$router.push({
+                path: '/article',
+                query: {
+                    articleId: item.id
+                }
+            });
+            location.reload();
+        },
+        changeRewardPrice() {
+            this.rewardData.priceIndex = (this.rewardData.priceIndex + 1) % this.rewardTable.length;
+        },
+        async rewardSubmit() {
+            let money = this.rewardTable[this.rewardData.priceIndex];
+            let price = this.$refs.header.getUserInfo().balance;
+            if (money > price) {
+                eui.Message.error('你钱不够');
+            } else {
+                let res = (await rewardArticle({
+                    token: util.getCookie('token'),
+                    id: this.articleId,
+                    money
+                })).data;
+                if (res.flag) {
+                    location.reload();
+                } else {
+                    eui.Message.error(res.message);
+                }
+            }
         }
     },
     computed: {
         getArticleBG() {
             if (this.article.photoUrl != null) {
-                let pre = '/file?url=';
-                if (status == 'build') {
-                    pre = '/api' + pre;
-                }
-                return { backgroundImage: 'url(' + pre + this.article.photoUrl + '&random=' + parseInt(Math.random() * 100000000) + ')' };
+                return { backgroundImage: getPhotoUrl(this.article.photoUrl) };
             } else {
                 return { backgroundColor: '#fff' };
             }
         },
         getAuthorHP() {
-            let pre = '/file?url=';
-            if (status == 'build') {
-                pre = '/api' + pre;
-            }
-            return { backgroundImage: 'url(' + pre + this.author.headPortraitUrl + '&random=' + parseInt(Math.random() * 100000000) + ')' };
+            return { backgroundImage: getPhotoUrl(this.author.headPortraitUrl) };
         },
         getThumbColor() {
             return this.thumbed ? '#ff5c38' : '#666';
@@ -151,6 +204,7 @@ export default {
         this.articleId = this.$route.query.articleId;
         this.loadArticle();
         this.loadLike();
+        this.loadRewordTable();
     }
 };
 
@@ -223,6 +277,31 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
+}
+
+.main > .left > .reward {
+    position: absolute;
+    bottom: 20px;
+    right: 108px;
+    z-index: 2;
+}
+
+.main > .left > .reward > div {
+    float: left;
+    height: 30px;
+    line-height: 30px;
+}
+
+.main > .left > .reward > .btn {
+    height: 30px;
+    font-size: 20px;
+    color: #666;
+}
+
+.main > .left > .reward > .text {
+    margin-left: 5px;
+    font-size: 16px;
+    color: #666;
 }
 
 .main > .left > .thumb {
@@ -336,6 +415,9 @@ export default {
 
 .main > .right > .otherArticle {
     flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
     border-radius: 10px;
     overflow: hidden;
     background-color: #fff;
@@ -344,9 +426,148 @@ export default {
 .main > .right > .otherArticle > p {
     height: 30px;
     font-size: 20px;
+    margin-bottom: 10px;
 }
 
 .main > .right > .otherArticle > ul {
+    flex: 1;
     overflow: hidden;
+}
+
+.main > .right > .otherArticle > ul > li {
+    position: relative;
+    height: 54px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #333;
+    cursor: pointer;
+}
+
+.main > .right > .otherArticle > ul > li::before {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    content: "";
+}
+
+.main > .right > .otherArticle > ul > li:hover::before {
+    display: none;
+}
+
+.main > .right > .otherArticle > ul > li > .title {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+}
+
+.main > .right > .otherArticle > ul > li > .authorName {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+}
+
+.main > .right > .otherArticle > ul > li > .time {
+    position: absolute;
+    bottom: 5px;
+    right: 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+.main > .right > .otherArticle > ul > li > .placeName {
+    position: absolute;
+    bottom: 5px;
+    left: 8px;
+    width: 60px;
+    font-size: 12px;
+}
+
+.main > .right > .otherArticle > ul > li > .province {
+    position: absolute;
+    bottom: 5px;
+    left: 80px;
+    font-size: 12px;
+}
+
+.rewardBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 101;
+    width: 240px;
+    height: 100px;
+    padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 3px 1px #fff;
+    background-color: #fff;
+    transform: translate(-50%, -50%);
+}
+
+.rewardBox .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    color: #666;
+    cursor: pointer;
+}
+
+.rewardBox .close:hover {
+    color: #000;
+}
+
+.rewardBox .content {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    height: calc(100% - 50px);
+    padding: 0px 10px;
+    margin-top: 25px;
+    cursor: default;
+}
+
+.rewardBox .content div {
+    line-height: 30px;
+}
+
+.rewardBox .content .title {
+    font-size: 20px;
+}
+
+.rewardBox .content .price {
+    width: 80px;
+    padding: 0px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #ccc;
+    text-align: center;
+    cursor: pointer;
+}
+
+.rewardBox .content .submit {
+    padding: 0px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #ff5c38;
+    cursor: pointer;
+}
+
+.transparent {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 </style>
