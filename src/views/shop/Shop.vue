@@ -181,7 +181,6 @@ export default {
                     token: util.getCookie('token'),
                     file: this.$refs.file.files[0]
                 })).data;
-                console.log(res.data);
                 if (res.data.url == null) {
                     eui.Message.error(res.message);
                 } else {

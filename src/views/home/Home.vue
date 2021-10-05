@@ -52,7 +52,12 @@
                         </el-form-item>
 
                         <!-- 上传图片 -->
-                        <el-form-item label="上传图片" :label-width="formLabelWidth"></el-form-item>
+                        <el-form-item label="上传图片" :label-width="formLabelWidth">
+                            <div class="photoBox">
+                                <div class="top" :style="{backgroundImage: photoUrl}"></div>
+                                <input type="file" ref="file" class="right" @change="uploadPhoto" />
+                            </div>
+                        </el-form-item>
                     </el-form>
 
                     <!-- 按钮 -->
@@ -167,7 +172,8 @@
 import Header from 'components/content/Header.vue';
 import ElementUI from "plugins/ElementUI.js";
 import { getArticles, releaseArticle } from "network/Home.js";
-import util from "common/utils.js"
+import { getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Public.js';
+import util from "common/utils.js";
 window.util = util;
 
 export default {
@@ -225,6 +231,10 @@ export default {
             to: [
                 {},
             ],
+            addArticleData: {
+                photoId: null,
+                photoUrl: null,
+            }
         };
     },
 
@@ -252,10 +262,43 @@ export default {
             // 刷新页面
             // location.reload();
         },
+        async uploadPhoto() {
+            if (this.addArticleData.photoUrl == null) {
+                let res = (await uploadPhoto({
+                    token: util.getCookie('token'),
+                    file: this.$refs.file.files[0]
+                })).data;
+                if (res.data.url == null) {
+                    ElementUI.Message.error(res.message);
+                } else {
+                    this.addArticleData.photoUrl = res.data.url;
+                    this.addArticleData.photoId = res.data.id;
+                }
+            } else {
+                let res = (await reUploadPhoto({
+                    token: util.getCookie('token'),
+                    file: this.$refs.file.files[0],
+                    id: this.addArticleData.photoId,
+                })).data;
+                if (res.flag) {
+                    // 为了触发动态更新，给url重新赋值
+                    let str = this.addGiftData.photoUrl;
+                    this.addArticleData.photoUrl = '';
+                    this.addArticleData.photoUrl = str;
+                } else {
+                    ElementUI.Message.error(res.message);
+                }
+            }
+        },
         // 获取上传的文件
         getFile(event) {
 
         },
+    },
+    computed: {
+        photoUrl() {
+            return getPhotoUrl(this.addArticleData.photoUrl);
+        }
     }
 }
 </script>
@@ -299,6 +342,52 @@ export default {
 .tourTop h1 {
     float: left;
     /* background-color: aquamarine; */
+}
+
+.tourTop .photoBox {
+    position: relative;
+    display: inline-block;
+    width: 238px;
+    height: 150px;
+    border: 1px solid #c0c4cc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+.tourTop .photoBox > .top {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    /* background-color: pink; */
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    pointer-events: none;
+}
+
+.tourTop .photoBox::before {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    line-height: 150px;
+    text-align: center;
+    border-radius: 5px;
+    color: #c0c4cc;
+    background-color: #fff;
+    content: "上传图片";
+    pointer-events: none;
+}
+
+.tourTop .photoBox > input {
+    height: 100%;
 }
 
 .write {
