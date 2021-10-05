@@ -129,7 +129,14 @@
                 </el-dialog>
 
                 <!-- 我的咨询 -->
-                <el-tab-pane label="我的咨询" name="second">我的咨询</el-tab-pane>
+                <el-tab-pane label="我的咨询" name="second">
+                    <div class="guideBox myConsults" v-for="(item,index) in myConsults">
+                        <h3>{{item.guide}}</h3>
+                        <span>{{item.stage}}</span>
+                        <span>评分：{{item.score}}</span>
+                        <span>{{item.time}}</span>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
         </div>
 
@@ -171,8 +178,8 @@
 <script>
 import Header from 'components/content/Header.vue';
 import ElementUI from "plugins/ElementUI.js";
-import { getArticles, releaseArticle } from "network/Home.js";
-import { getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Public.js';
+import { getUserInfo, getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Public.js';
+import { getArticles, releaseArticle, getOwnConsult } from "network/Home.js";
 import util from "common/utils.js";
 window.util = util;
 
@@ -181,6 +188,9 @@ export default {
 
     data() {
         return {
+            rule: {
+                token: util.getCookie("token"),
+            },
             activeName: 'first',
             imgList: [
                 { id: 0, idView: require("assets/img/run1.png") },
@@ -228,13 +238,23 @@ export default {
                 { id: 6, name: '导游6', brief: '啦啦啦我好困不想做了', score: 100 },
                 { id: 7, name: '导游7', brief: '啦啦啦我好困不想做了', score: 100 },
             ],
-            to: [
-                {},
+            myConsults: [
+                { id: 1, account: 1, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
+                { id: 2, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
+                { id: 3, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
+                { id: 4, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
+                { id: 5, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
+                { id: 6, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
             ],
             addArticleData: {
                 photoId: null,
                 photoUrl: null,
-            }
+            },
+            rules: {
+                noneReply: [],
+                alreadyReply: [],
+                grade: [],
+            },
         };
     },
 
@@ -242,9 +262,9 @@ export default {
         handleClick(tab, event) {
             console.log(tab, event);
         },
-        // handleClick() {
-        //     alert('button click');
-        // },
+        async getName(account) {
+            return await getUserInfo({ account });
+        },
         // 发布文章
         async submit() {
             // 获取表单里的值 调用接口
@@ -294,12 +314,47 @@ export default {
         getFile(event) {
 
         },
+        // 获取我的咨询
+        async getMyConsult(rule) {
+            let r = await getOwnConsult(rule);
+            let consultList = r.data.data.consultList;
+            console.log(consultList);
+
+            for (var i = 0; i < consultList.length; i++) {
+                // 处理时间
+                let date = util.getDateString(consultList[i].consultTime);
+                consultList[i].date = date;
+
+                // 通过account获取用户姓名
+                const gui = await this.getName(consultList[i].account);
+                let guideName = gui.data.data.username;
+                consultList[i].guide = guideName;
+                console.log(consultList);
+
+                // 待回复
+                if (consultList[i].stage == 0) {
+                    this.rules.noneReply.push(consultList[i]);
+                    // console.log(this.rules.noneReply);
+                    // 已回复
+                } else if (consultList[i].stage == 1) {
+                    this.rules.alreadyReply.push(consultList[i]);
+                    // console.log(this.rules.alreadyReply);
+                    // 已评分
+                } else if (consultList[i].stage == 2) {
+                    this.rules.grade.push(consultList[i]);
+                    // console.log(this.rules.grade);
+                }
+            }
+        }
     },
     computed: {
         photoUrl() {
             return getPhotoUrl(this.addArticleData.photoUrl);
         }
-    }
+    },
+    async created() {
+        this.getMyConsult(this.rule);
+    },
 }
 </script>
 
@@ -520,6 +575,13 @@ export default {
     right: 0;
     margin-top: 10px;
     background-color: saddlebrown;
+}
+
+.stage {
+    position: absolute;
+    left: 0;
+    bottom: 20px;
+    background-color: aquamarine;
 }
 
 /* 一起游 */

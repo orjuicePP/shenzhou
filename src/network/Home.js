@@ -31,3 +31,14 @@ export function releaseArticle(data) {
         },
     });
 };
+
+// 查看我发起的咨询
+export function getOwnConsult(data) {
+    return request({
+        method: 'GET',
+        url: '/getOwnConsult',
+        headers: {
+            token: data.token,
+        },
+    });
+};
