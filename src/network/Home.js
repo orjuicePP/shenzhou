@@ -42,3 +42,18 @@ export function getOwnConsult(data) {
         },
     });
 };
+
+// 用户评分答复
+export function scoreConsult(data) {
+    return request({
+        method: 'POST',
+        url: '/scoreConsult',
+        headers: {
+            token: data.token,
+        },
+        params: {
+            id: data.id,
+            score: data.score,
+        },
+    });
+};

@@ -130,12 +130,32 @@
 
                 <!-- 我的咨询 -->
                 <el-tab-pane label="我的咨询" name="second">
-                    <div class="guideBox myConsults" v-for="(item,index) in myConsults">
+                    <div
+                        class="guideBox myConsults"
+                        v-for="(item,index) in rules.gui"
+                        @click="dialogFormVisible3 = true && item.clickFlag "
+                    >
                         <h3>{{item.guide}}</h3>
-                        <span>{{item.stage}}</span>
-                        <span>评分：{{item.score}}</span>
-                        <span>{{item.time}}</span>
+                        <p v-if="item.stage == 0">等待导游回答</p>
+                        <p v-if="item.stage == 1">导游已回答，请点击评分</p>
+                        <span>{{item.date}}</span>
                     </div>
+
+                    <!-- 用户评分对话框 -->
+                    <el-dialog title="请给这位导游的回答评个分吧！" :visible.sync="dialogFormVisible3">
+                        <el-form :model="form3">
+                            <el-form-item label="你的评分" :label-width="formLabelWidth">
+                                <el-input v-model="form3.name" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+                            <el-button
+                                type="primary"
+                                @click="dialogFormVisible3 = false;submitScore()"
+                            >确 定</el-button>
+                        </div>
+                    </el-dialog>
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -179,7 +199,7 @@
 import Header from 'components/content/Header.vue';
 import ElementUI from "plugins/ElementUI.js";
 import { getUserInfo, getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Public.js';
-import { getArticles, releaseArticle, getOwnConsult } from "network/Home.js";
+import { getArticles, releaseArticle, getOwnConsult, scoreConsult } from "network/Home.js";
 import util from "common/utils.js";
 window.util = util;
 
@@ -190,6 +210,7 @@ export default {
         return {
             rule: {
                 token: util.getCookie("token"),
+                id: util.getCookie("account"),
             },
             activeName: 'first',
             imgList: [
@@ -220,6 +241,20 @@ export default {
                 resource: '',
                 desc: ''
             },
+            // 用户给导游评分
+            dialogFormVisible3: false,
+            form3: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            // clickFlag: false,
+            // displayYes: true,
             // 一些测试数据
             articles: [
                 { id: 1, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
@@ -238,22 +273,17 @@ export default {
                 { id: 6, name: '导游6', brief: '啦啦啦我好困不想做了', score: 100 },
                 { id: 7, name: '导游7', brief: '啦啦啦我好困不想做了', score: 100 },
             ],
-            myConsults: [
-                { id: 1, account: 1, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
-                { id: 2, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
-                { id: 3, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
-                { id: 4, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
-                { id: 5, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
-                { id: 6, guide: '哇哇哇哇', time: 123456, stage: '未读', 评分: 456 },
-            ],
             addArticleData: {
                 photoId: null,
                 photoUrl: null,
             },
             rules: {
-                noneReply: [],
-                alreadyReply: [],
-                grade: [],
+                gui: [
+                    { id: 1, guide: '哇哇哇哇1', date: 123456, content: '', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
+                    { id: 2, guide: '哇哇哇哇2', date: 123456, content: '', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
+                    { id: 3, guide: '哇哇哇哇3', date: 123456, content: '', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
+                    { id: 4, guide: '哇哇哇哇4', date: 123456, content: '', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
+                ],
             },
         };
     },
@@ -310,41 +340,53 @@ export default {
                 }
             }
         },
-        // 获取上传的文件
-        getFile(event) {
-
-        },
         // 获取我的咨询
         async getMyConsult(rule) {
             let r = await getOwnConsult(rule);
             let consultList = r.data.data.consultList;
-            console.log(consultList);
+            // console.log(consultList);
 
             for (var i = 0; i < consultList.length; i++) {
                 // 处理时间
                 let date = util.getDateString(consultList[i].consultTime);
                 consultList[i].date = date;
 
-                // 通过account获取用户姓名
+                // 通过account获取导游姓名
                 const gui = await this.getName(consultList[i].account);
                 let guideName = gui.data.data.username;
                 consultList[i].guide = guideName;
                 console.log(consultList);
 
-                // 待回复
-                if (consultList[i].stage == 0) {
-                    this.rules.noneReply.push(consultList[i]);
-                    // console.log(this.rules.noneReply);
-                    // 已回复
-                } else if (consultList[i].stage == 1) {
-                    this.rules.alreadyReply.push(consultList[i]);
-                    // console.log(this.rules.alreadyReply);
-                    // 已评分
-                } else if (consultList[i].stage == 2) {
-                    this.rules.grade.push(consultList[i]);
-                    // console.log(this.rules.grade);
+                if (consultList[i].stage == 1) {
+                    // 弹出评分对话框
+                    consultList[i].clickFlag = true;
+                }
+                if (consultList[i].stage != 2) {
+                    // 放入存储数组中
+                    this.rules.gui.push(consultList[i]);
+                    console.log(this.rules.gui);
                 }
             }
+        },
+        async submitScore() {
+            // 获取表单里的值
+            let res = this.form3.name;
+            console.log(res);
+
+            // 调用接口 改变数据
+            let da = {
+                token: this.rule.token,
+                id: this.rule.id,
+                score: res,
+            };
+            const r = await scoreConsult(da);
+            console.log(r);
+
+            // 清空表单
+            this.form.name = "";
+
+            // 刷新页面
+            location.reload();
         }
     },
     computed: {
@@ -577,11 +619,18 @@ export default {
     background-color: saddlebrown;
 }
 
-.stage {
+.myConsults p {
+    text-align: center;
+    line-height: 64px;
+    color: saddlebrown;
+    background-color: aquamarine;
+}
+
+.myConsults span {
     position: absolute;
     left: 0;
     bottom: 20px;
-    background-color: aquamarine;
+    background-color: bisque;
 }
 
 /* 一起游 */
