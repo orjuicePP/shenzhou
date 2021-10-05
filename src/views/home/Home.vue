@@ -107,10 +107,10 @@
                     <div
                         class="guideBox"
                         v-for="(item,index) in guides"
-                        @click="dialogFormVisible2 = true"
+                        @click="dialogFormVisible2 = true;getGuide(item)"
                     >
-                        <h3>{{item.name}}</h3>
-                        <p>{{item.brief}}</p>
+                        <h3>{{item.guide}}</h3>
+                        <p>{{item.introduction}}</p>
                         <span>评分：{{item.score}}</span>
                     </div>
                 </el-tab-pane>
@@ -124,7 +124,10 @@
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-                        <el-button type="primary" @click="dialogFormVisible2 = false">确 定</el-button>
+                        <el-button
+                            type="primary"
+                            @click="dialogFormVisible2 = false;submitAsk()"
+                        >确 定</el-button>
                     </div>
                 </el-dialog>
 
@@ -141,23 +144,29 @@
                         <p v-if="item.stage == 1">导游已回答，请点击评分</p>
                         <span>{{item.date}}</span>
                     </div>
-
-                    <!-- 用户评分对话框 -->
-                    <el-dialog title="请给这位导游的回答评个分吧！" :visible.sync="dialogFormVisible3">
-                        <el-form :model="form3">
-                            <el-form-item label="你的评分" :label-width="formLabelWidth">
-                                <el-input v-model="form3.name" autocomplete="off"></el-input>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="dialogFormVisible3 = false">取 消</el-button>
-                            <el-button
-                                type="primary"
-                                @click="dialogFormVisible3 = false;submitScore()"
-                            >确 定</el-button>
-                        </div>
-                    </el-dialog>
                 </el-tab-pane>
+
+                <!-- 用户评分对话框 -->
+                <el-dialog title="请给这位导游的回答评个分吧！" :visible.sync="dialogFormVisible3">
+                    <el-form :model="form3">
+                        <!-- 导游的回答 -->
+                        <el-form-item label="导游的回答" :label-width="formLabelWidth">
+                            <div>{{reply}}</div>
+                        </el-form-item>
+
+                        <!-- 评分框 -->
+                        <el-form-item label="你的评分" :label-width="formLabelWidth">
+                            <el-input v-model="form3.name" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+                        <el-button
+                            type="primary"
+                            @click="dialogFormVisible3 = false;submitScore()"
+                        >确 定</el-button>
+                    </div>
+                </el-dialog>
             </el-tabs>
         </div>
 
@@ -260,7 +269,7 @@
 import Header from 'components/content/Header.vue';
 import ElementUI from "plugins/ElementUI.js";
 import { getUserInfo, getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Public.js';
-import { getArticles, releaseArticle, getOwnConsult, scoreConsult } from "network/Home.js";
+import { getArticles, releaseArticle, getOwnConsult, scoreConsult, getSomeGuide, initiateConsultation } from "network/Home.js";
 import util from "common/utils.js";
 window.util = util;
 
@@ -294,25 +303,12 @@ export default {
             dialogFormVisible2: false,
             form2: {
                 name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
             },
+            g: '',
             // 用户给导游评分
             dialogFormVisible3: false,
             form3: {
                 name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
             },
             // clickFlag: false,
             // displayYes: true,
@@ -326,13 +322,9 @@ export default {
                 { id: 6, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
             ],
             guides: [
-                { id: 1, name: '导游1', brief: '啦啦啦我好困不想做了', score: 100 },
-                { id: 2, name: '导游2', brief: '啦啦啦我好困不想做了', score: 100 },
-                { id: 3, name: '导游3', brief: '啦啦啦我好困不想做了', score: 100 },
-                { id: 4, name: '导游4', brief: '啦啦啦我好困不想做了', score: 100 },
-                { id: 5, name: '导游5', brief: '啦啦啦我好困不想做了', score: 100 },
-                { id: 6, name: '导游6', brief: '啦啦啦我好困不想做了', score: 100 },
-                { id: 7, name: '导游7', brief: '啦啦啦我好困不想做了', score: 100 },
+                { id: 1, guide: '导游1', introduction: '啦啦啦我好困不想做了', score: 100 },
+                { id: 2, guide: '导游2', introduction: '555555555555555', score: 100 },
+                { id: 3, guide: '导游3', introduction: 'sdohfisdfisdbfhsdbfksdc', score: 100 },
             ],
             addArticleData: {
                 photoId: null,
@@ -340,13 +332,12 @@ export default {
             },
             rules: {
                 gui: [
-                    { id: 1, guide: '哇哇哇哇1', date: 123456, content: 'hhhhhhhhhhhhhh', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
-                    { id: 2, guide: '哇哇哇哇2', date: 123456, content: 'h', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
-                    { id: 3, guide: '哇哇哇哇3', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
-                    { id: 4, guide: '哇哇哇哇4', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
+                    // { id: 1, guide: '哇哇哇哇1', date: 123456, content: '啦啦啦我好困不想做了啦啦啦我好困不想做了', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
+                    // { id: 4, guide: '哇哇哇哇4', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
                 ],
                 answer: '',
             },
+            reply: '',
         };
     },
 
@@ -402,6 +393,32 @@ export default {
                 }
             }
         },
+        // 获得被咨询的导游
+        getGuide(item) {
+            this.g = item.id;
+            // console.log(this.g);
+        },
+        // 发起咨询
+        async submitAsk() {
+            // 获取表单里的值
+            let res = this.form2.name;
+            console.log(res);
+
+            // 调用接口 改变数据
+            let da = {
+                token: this.rules.token,
+                gid: this.g,
+                content: res,
+            };
+            const r = await initiateConsultation(da);
+            console.log(r);
+
+            // 清空表单
+            this.form.name = "";
+
+            // 刷新页面
+            location.reload();
+        },
         // 获取我的咨询
         async getMyConsult(rule) {
             let r = await getOwnConsult(rule);
@@ -417,7 +434,7 @@ export default {
                 const gui = await this.getName(consultList[i].account);
                 let guideName = gui.data.data.username;
                 consultList[i].guide = guideName;
-                console.log(consultList);
+                // console.log(consultList);
 
                 if (consultList[i].stage == 1) {
                     // 弹出评分对话框
@@ -426,35 +443,56 @@ export default {
                 if (consultList[i].stage != 2) {
                     // 放入存储数组中
                     this.rules.gui.push(consultList[i]);
-                    console.log(this.rules.gui);
+                    // console.log(this.rules.gui);
                 }
             }
         },
         // 获得点击的盒子
         getItem(item) {
-            this.rules.gui.answer = item;
+            this.rules.answer = item;
+            this.reply = item.reply;
         },
         // 给导游的回答评分
         async submitScore() {
             // 获取表单里的值
             let res = this.form3.name;
-            console.log(res);
+            // console.log(res);
 
             // 调用接口 改变数据
             let da = {
                 token: this.rule.token,
-                id: this.rules.gui.answer.id,
+                id: this.rules.answer.id,
                 score: res,
             };
             const r = await scoreConsult(da);
-            console.log(r);
+            // console.log(r);
 
             // 清空表单
             this.form.name = "";
 
             // 刷新页面
             location.reload();
-        }
+        },
+        // 获取导游信息
+        async getGuides() {
+            let res = await getSomeGuide();
+            let guideList = res.data.data.guideList;
+            console.log(guideList);
+            console.log(guideList[0].guideAccount);
+
+            for (var i = 0; i < guideList.length; i++) {
+                // 通过guideAccount获取导游姓名
+                const gui = await this.getName(guideList[i].guideAccount);
+                let guideName = gui.data.data.username;
+                guideList[i].guide = guideName;
+                console.log(guideList);
+
+                // 放入数组
+                this.guides.push(guideList[i]);
+                console.log(this.guides);
+
+            }
+        },
     },
     computed: {
         photoUrl() {
@@ -463,6 +501,7 @@ export default {
     },
     async created() {
         this.getMyConsult(this.rule);
+        this.getGuides();
     },
 }
 </script>
@@ -687,9 +726,10 @@ export default {
 }
 
 .myConsults .fillCon {
-    bottom: 50px;
+    margin-top: 5px;
+    padding: 0 5px;
     background-color: bisque;
-    height: 69px;
+    height: 65px;
     /* 省略文本 */
     overflow: hidden;
     text-overflow: ellipsis;
