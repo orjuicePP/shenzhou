@@ -188,7 +188,67 @@
 
         <!-- 页脚 -->
         <div class="footer">
-            <div class="footerCon"></div>
+            <div class="footerCon">
+                <div class="left">
+                    <div class="logo"></div>
+                    <div class="chickenSoup">鸡汤</div>
+                </div>
+                <div class="middle">
+                    <div class="title">关于我们</div>
+                    <ul>
+                        <li>
+                            <a>常见问题</a>
+                        </li>
+                        <li>
+                            <a>联系我们</a>
+                        </li>
+                        <li>
+                            <a>开发团队</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="right">
+                    <div class="title">友情链接</div>
+                    <ul class="clearfix">
+                        <li>
+                            <a href="https://pindao.hao123.com/go" target="_blank">特价旅游</a>
+                        </li>
+                        <li>
+                            <a href="https://www.ctrip.com/" target="_blank">携程</a>
+                        </li>
+                        <li>
+                            <a href="https://www.qunar.com/" target="_blank">去哪儿</a>
+                        </li>
+                        <li>
+                            <a href="http://www.elong.com/" target="_blank">艺龙</a>
+                        </li>
+                        <li>
+                            <a href="http://www.mafengwo.cn/" target="_blank">马蜂窝</a>
+                        </li>
+                        <li>
+                            <a href="http://www.tuniu.com/" target="_blank">途牛旅行网</a>
+                        </li>
+                        <li>
+                            <a href="http://www.lvmama.com/" target="_blank">驴妈妈旅游</a>
+                        </li>
+                        <li>
+                            <a href="https://www.airbnb.cn/" target="_blank">Airbnb民宿</a>
+                        </li>
+                        <li>
+                            <a href="https://www.booking.com/" target="_blank">Booking酒店</a>
+                        </li>
+                        <li>
+                            <a href="https://www.fliggy.com/" target="_blank">飞猪旅行</a>
+                        </li>
+                        <li>
+                            <a href="https://www.qyer.com/" target="_blank">穷游网</a>
+                        </li>
+                        <li>
+                            <a href="https://www.ly.com/" target="_blank">同程旅行</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- 回到顶部 -->
@@ -662,14 +722,99 @@ export default {
 
 /* 页脚 */
 .footer {
-    height: 180px;
-    background-color: rgb(252, 247, 175);
+    height: 200px;
+    background-color: #333;
 }
 
 .footerCon {
     width: var(--baseWidth);
-    height: 180px;
+    height: 100%;
+    padding-top: 20px;
+    box-sizing: border-box;
     margin: auto;
-    background-color: salmon;
+}
+
+.footerCon .left {
+    float: left;
+}
+
+.footerCon .left .logo {
+    width: 180px;
+    height: 60px;
+    background-image: url("~assets/img/logo.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: left center;
+}
+
+.footerCon .left .chickenSoup {
+    margin-top: 10px;
+    color: #ccc;
+}
+
+.footerCon .right {
+    float: right;
+    color: #ccc;
+    width: 450px;
+    margin-right: 100px;
+}
+
+.footerCon .right .title {
+    font-size: 20px;
+    color: #eee;
+}
+
+.footerCon .right ul {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.footerCon .right ul li {
+    float: left;
+    width: 150px;
+    margin-bottom: 5px;
+}
+
+.footerCon .right ul li a {
+    width: 100%;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.footerCon .right ul li a:hover {
+    color: #ff5c38;
+}
+
+.footerCon .middle {
+    float: right;
+    color: #ccc;
+    width: 150px;
+}
+
+.footerCon .middle .title {
+    font-size: 20px;
+    color: #eee;
+}
+
+.footerCon .middle ul {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.footerCon .middle ul li {
+    float: left;
+    width: 150px;
+    margin-bottom: 5px;
+}
+
+.footerCon .middle ul li a {
+    width: 100%;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.footerCon .middle ul li a:hover {
+    color: #ff5c38;
+    cursor: pointer;
 }
 </style>
