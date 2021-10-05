@@ -190,7 +190,7 @@ export default {
                     const userInfo = await this.getName(consultList[i].account);
                     let name = userInfo.data.data.username;
                     consultList[i].name = name;
-                    // console.log(consultList);
+                    console.log(consultList);
 
                     // 待回复
                     if (consultList[i].stage == 0) {
@@ -214,7 +214,7 @@ export default {
         // 获取点击的数组对象
         getC(item) {
             this.answer = item;
-            // console.log(this.answer.reply);
+            console.log(this.answer.id);
         },
 
         // 提交表单
@@ -225,18 +225,12 @@ export default {
             // 调用接口 改变数据
             let da = {
                 token: this.rules.token,
-                id: this.rules.id,
+                // id: this.rules.id,
+                id: this.answer.id,
                 reply: res,
             };
             const r = await replyConsult(da);
             console.log(r);
-            // 填充回答
-            // this.answer.reply = res;
-            // console.log(this.answer.reply);
-
-            // 改变状态
-            // this.answer.stage = 1;
-            // console.log(this.answer.stage);
 
             // 清空表单
             this.form.name = "";

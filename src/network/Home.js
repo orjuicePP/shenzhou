@@ -57,3 +57,26 @@ export function scoreConsult(data) {
         },
     });
 };
+
+// 获取一些导游信息
+export function getSomeGuide() {
+    return request({
+        method: 'GET',
+        url: '/public/getSomeGuide',
+    });
+};
+
+// 发起咨询
+export function initiateConsultation(data) {
+    return request({
+        method: 'POST',
+        url: '/initiateConsultation',
+        headers: {
+            token: data.token,
+        },
+        params: {
+            gid: data.gid,
+            content: data.content,
+        },
+    });
+};
