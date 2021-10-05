@@ -133,9 +133,10 @@
                     <div
                         class="guideBox myConsults"
                         v-for="(item,index) in rules.gui"
-                        @click="dialogFormVisible3 = true && item.clickFlag "
+                        @click="dialogFormVisible3 = true && item.clickFlag;getItem(item) "
                     >
                         <h3>{{item.guide}}</h3>
+                        <div class="fillCon">{{item.content}}</div>
                         <p v-if="item.stage == 0">等待导游回答</p>
                         <p v-if="item.stage == 1">导游已回答，请点击评分</p>
                         <span>{{item.date}}</span>
@@ -279,11 +280,12 @@ export default {
             },
             rules: {
                 gui: [
-                    { id: 1, guide: '哇哇哇哇1', date: 123456, content: '', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
-                    { id: 2, guide: '哇哇哇哇2', date: 123456, content: '', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
-                    { id: 3, guide: '哇哇哇哇3', date: 123456, content: '', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
-                    { id: 4, guide: '哇哇哇哇4', date: 123456, content: '', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
+                    { id: 1, guide: '哇哇哇哇1', date: 123456, content: 'hhhhhhhhhhhhhh', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
+                    { id: 2, guide: '哇哇哇哇2', date: 123456, content: 'h', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
+                    { id: 3, guide: '哇哇哇哇3', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
+                    { id: 4, guide: '哇哇哇哇4', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
                 ],
+                answer: '',
             },
         };
     },
@@ -368,6 +370,11 @@ export default {
                 }
             }
         },
+        // 获得点击的盒子
+        getItem(item) {
+            this.rules.gui.answer = item;
+        },
+        // 给导游的回答评分
         async submitScore() {
             // 获取表单里的值
             let res = this.form3.name;
@@ -376,7 +383,7 @@ export default {
             // 调用接口 改变数据
             let da = {
                 token: this.rule.token,
-                id: this.rule.id,
+                id: this.rules.gui.answer.id,
                 score: res,
             };
             const r = await scoreConsult(da);
@@ -619,9 +626,24 @@ export default {
     background-color: saddlebrown;
 }
 
+.myConsults .fillCon {
+    bottom: 50px;
+    background-color: bisque;
+    height: 69px;
+    /* 省略文本 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
 .myConsults p {
+    position: absolute;
+    bottom: 20px;
+    height: 23px;
     text-align: center;
-    line-height: 64px;
+    line-height: 23px;
     color: saddlebrown;
     background-color: aquamarine;
 }
@@ -629,7 +651,7 @@ export default {
 .myConsults span {
     position: absolute;
     left: 0;
-    bottom: 20px;
+    bottom: 5px;
     background-color: bisque;
 }
 
