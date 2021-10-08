@@ -704,7 +704,7 @@ export default {
             let r = await joinCollage(da);
         },
         // 发起一起游
-        async () {
+        async submitTo() {
             let da = {
                 token: this.rules.token,
                 pNumber: this.formTo.pNumber,
