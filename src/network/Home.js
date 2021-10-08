@@ -80,3 +80,79 @@ export function initiateConsultation(data) {
         },
     });
 };
+
+// 获取自己参与的拼团
+export function getJoinCollage(data) {
+    return request({
+        method: 'GET',
+        url: '/getJoinCollage',
+        headers: {
+            token: data.token,
+        },
+    });
+};
+
+// 获取自己发起的拼团
+export function getLaunchCollage(data) {
+    return request({
+        method: 'GET',
+        url: '/getLaunchCollage',
+        headers: {
+            token: data.token,
+        },
+    });
+};
+
+// 获取一些拼团
+export function getSomeCollage() {
+    return request({
+        method: 'GET',
+        url: '/public/getSomeCollage',
+    });
+};
+
+// 加入拼团
+export function joinCollage(data) {
+    return request({
+        method: 'POST',
+        url: '/joinCollage',
+        headers: {
+            token: data.token,
+        },
+        params: {
+            id: data.id,
+        },
+    });
+};
+
+// 完成拼团
+// export function completeCollage(data) {
+//     return request({
+//         method: 'POST',
+//         url: '/completeCollage',
+//         headers: {
+//             token: data.token,
+//         },
+//         params: {
+//             id: data.id,
+//         },
+//     });
+// };
+
+// 发起拼团
+export function addCollage(data) {
+    return request({
+        method: 'POST',
+        url: '/addCollage',
+        headers: {
+            token: data.token,
+        },
+        params: {
+            pNumber: data.pNumber,
+            departure: data.departure,
+            destination: data.destination,
+            dTime: data.dTime,
+            describe: data.describe,
+        },
+    });
+};
