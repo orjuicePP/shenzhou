@@ -266,6 +266,9 @@
                                 >加 入</el-button>
                             </span>
                         </el-dialog>
+
+                        <!-- 人满错误弹框 -->
+                        <!-- <el-button :plain="true" @click="open">错误</el-button> -->
                     </el-tab-pane>
 
                     <!-- 我参与的一起游 -->
@@ -471,6 +474,17 @@ export default {
     methods: {
         handleClick(tab, event) {
             // console.log(tab, event);
+        },
+        // 错误弹框
+        open() {
+            this.$message.error('很抱歉，该“一起游”已满人');
+        },
+        // 正确弹框
+        open2() {
+            this.$message({
+                message: '恭喜你已成功加入该“一起游”',
+                type: 'success'
+            });
         },
         handleClose(done) {
             this.$confirm('确认关闭？')
@@ -702,22 +716,36 @@ export default {
                 id: this.toId,
             };
             let r = await joinCollage(da);
+            console.log(r);
+
+            console.log(r.data.code);
+            if (r.data.flag == false) {
+                this.open();
+            } else {
+                this.open2();
+                // 刷新页面
+                location.reload();
+            }
+
+
         },
         // 发起一起游
         async submitTo() {
+            // 处理时间
+            let date = this.formTo.dTime;
+            let d = new Date(date);
+            let dTime = d.getTime();
+
             let da = {
                 token: this.rules.token,
                 pNumber: this.formTo.pNumber,
                 departure: this.formTo.departure,
                 destination: this.formTo.destination,
-                dTime: this.formTo.dTime,
+                dTime: dTime,
                 describe: this.formTo.describe,
             };
             const r = await addCollage(da);
-            console.log(r);
-
-            // 清空表单
-            // this.form.name = "";
+            // console.log(r);
 
             // 刷新页面
             location.reload();
