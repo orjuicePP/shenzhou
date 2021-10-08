@@ -210,7 +210,7 @@
                         <el-button @click="dialogTableVisibleTo = false">取 消</el-button>
                         <el-button
                             type="primary"
-                            @click="dialogTableVisibleTo = false;submitTo(formTo)"
+                            @click="dialogTableVisibleTo = false;submitTo()"
                         >发 起</el-button>
                     </div>
                 </el-dialog>
@@ -704,9 +704,7 @@ export default {
             let r = await joinCollage(da);
         },
         // 发起一起游
-        async submitTo(formTo) {
-
-            // 调用接口 改变数据
+        async () {
             let da = {
                 token: this.rules.token,
                 pNumber: this.formTo.pNumber,
