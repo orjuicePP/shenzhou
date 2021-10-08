@@ -68,7 +68,7 @@
                 </el-dialog>
 
                 <!-- 筛选器 -->
-                <div class="select">
+                <!-- <div class="select">
                     <el-dropdown>
                         <el-button
                             type="primary"
@@ -82,7 +82,7 @@
                             <el-dropdown-item>按省份</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                </div>
+                </div>-->
             </div>
 
             <!-- 内容 -->
@@ -172,12 +172,51 @@
 
         <!-- 一起游 -->
         <div class="together">
+            <!-- 标题 -->
             <div class="tourTop">
                 <!-- 标题 -->
                 <h1 class="title">一起游</h1>
 
+                <!-- 发起一起游 -->
+                <div class="write" @click="dialogTableVisibleTo = true">
+                    <el-button
+                        type="primary"
+                        icon="el-icon-edit"
+                        circle
+                        style="color: black; background-color: white; border-color: white;"
+                    ></el-button>
+                </div>
+
+                <!-- 发起一起游对话框 -->
+                <el-dialog title="发起一起游~" :visible.sync="dialogTableVisibleTo">
+                    <el-form :model="formTo">
+                        <el-form-item label="请输入除自身之外需要的人数" :label-width="formLabelWidth2">
+                            <el-input v-model="formTo.pNumber" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="请输入起点" :label-width="formLabelWidth2">
+                            <el-input v-model="formTo.departure" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="请输入终点" :label-width="formLabelWidth2">
+                            <el-input v-model="formTo.destination" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="请输入出发时间" :label-width="formLabelWidth2">
+                            <el-input v-model="formTo.dTime" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="请对本次一起游做出描述" :label-width="formLabelWidth2">
+                            <el-input v-model="formTo.describe" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogTableVisibleTo = false">取 消</el-button>
+                        <el-button
+                            type="primary"
+                            @click="dialogTableVisibleTo = false;submitTo()"
+                        >发 起</el-button>
+                    </div>
+                </el-dialog>
+
                 <!-- 筛选器 -->
-                <div class="select">
+                <!-- <div class="select">
                     <el-dropdown>
                         <el-button
                             type="primary"
@@ -191,7 +230,74 @@
                             <el-dropdown-item>人数</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                </div>
+                </div>-->
+            </div>
+
+            <div>
+                <el-tabs v-model="activeName2" @tab-click="handleClick">
+                    <!-- 大热的一起游 -->
+                    <el-tab-pane label="大热的一起游" name="first">
+                        <div
+                            class="togetherHot guideBox myConsults"
+                            v-for="(item,index) in toget.hot"
+                            @click="dialogVisibleJoin = true;getHot(item)"
+                        >
+                            <div style="text-align: center">{{item.use}}</div>
+                            <h3>From:{{item.departure}}</h3>
+                            <h3>To:{{item.destination}}</h3>
+                            <p>{{item.describe}}</p>
+                            <span class="num">还需{{item.pNumber}}人即可成团！</span>
+                            <span>出发时间：{{item.date}}</span>
+                        </div>
+
+                        <!-- 加入一起游对话框 -->
+                        <el-dialog
+                            title="详情描述"
+                            :visible.sync="dialogVisibleJoin"
+                            width="30%"
+                            :before-close="handleClose"
+                        >
+                            <span>{{describe}}</span>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="dialogVisibleJoin = false">取 消</el-button>
+                                <el-button
+                                    type="primary"
+                                    @click="dialogVisibleJoin = false;joinTo()"
+                                >加 入</el-button>
+                            </span>
+                        </el-dialog>
+                    </el-tab-pane>
+
+                    <!-- 我参与的一起游 -->
+                    <el-tab-pane label="我参与的一起游" name="second">
+                        <div
+                            class="togetherHot guideBox myConsults"
+                            v-for="(item,index) in toget.join"
+                        >
+                            <div style="text-align: center">{{item.use}}</div>
+                            <h3>From:{{item.departure}}</h3>
+                            <h3>To:{{item.destination}}</h3>
+                            <p>{{item.describe}}</p>
+                            <span class="num">还需{{item.pNumber}}人即可成团！</span>
+                            <span>出发时间：{{item.date}}</span>
+                        </div>
+                    </el-tab-pane>
+
+                    <!-- 我发起的一起游 -->
+                    <el-tab-pane label="我发起的一起游" name="third">
+                        <div
+                            class="togetherHot guideBox myConsults"
+                            v-for="(item,index) in toget.Launch"
+                        >
+                            <div style="text-align: center">{{item.use}}</div>
+                            <h3>From:{{item.departure}}</h3>
+                            <h3>To:{{item.destination}}</h3>
+                            <p>{{item.describe}}</p>
+                            <span class="num">还需{{item.pNumber}}人即可成团！</span>
+                            <span>出发时间：{{item.date}}</span>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
         </div>
 
@@ -200,7 +306,7 @@
             <div class="footerCon">
                 <div class="left">
                     <div class="logo"></div>
-                    <div class="chickenSoup">鸡汤</div>
+                    <div class="chickenSoup">由神秘组织银河护卫队推出，让每一个善良的地球人能拥有说走就走的旅行。</div>
                 </div>
                 <div class="middle">
                     <div class="title">关于我们</div>
@@ -269,7 +375,11 @@
 import Header from 'components/content/Header.vue';
 import ElementUI from "plugins/ElementUI.js";
 import { getUserInfo, getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Public.js';
-import { getArticles, releaseArticle, getOwnConsult, scoreConsult, getSomeGuide, initiateConsultation } from "network/Home.js";
+import {
+    getArticles, releaseArticle, getOwnConsult, scoreConsult, getSomeGuide,
+    initiateConsultation, getJoinCollage, getLaunchCollage, getSomeCollage,
+    joinCollage, addCollage
+} from "network/Home.js";
 import util from "common/utils.js";
 window.util = util;
 
@@ -310,8 +420,6 @@ export default {
             form3: {
                 name: '',
             },
-            // clickFlag: false,
-            // displayYes: true,
             // 一些测试数据
             articles: [
                 { id: 1, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
@@ -338,12 +446,38 @@ export default {
                 answer: '',
             },
             reply: '',
+            // 一起游
+            activeName2: 'first',
+            toget: {
+                hot: [],
+                join: [],
+                Launch: []
+            },
+            dialogVisibleJoin: false,
+            describe: '',
+            toId: 0,
+            dialogTableVisibleTo: false,
+            formTo: {
+                pNumber: '',
+                departure: '',
+                destination: '',
+                dTime: '',
+                describe: ''
+            },
+            formLabelWidth2: '200px',
         };
     },
 
     methods: {
         handleClick(tab, event) {
-            console.log(tab, event);
+            // console.log(tab, event);
+        },
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => { });
         },
         async getName(account) {
             return await getUserInfo({ account });
@@ -477,21 +611,116 @@ export default {
         async getGuides() {
             let res = await getSomeGuide();
             let guideList = res.data.data.guideList;
-            console.log(guideList);
-            console.log(guideList[0].guideAccount);
+            // console.log(guideList);
+            // console.log(guideList[0].guideAccount);
 
             for (var i = 0; i < guideList.length; i++) {
                 // 通过guideAccount获取导游姓名
                 const gui = await this.getName(guideList[i].guideAccount);
                 let guideName = gui.data.data.username;
                 guideList[i].guide = guideName;
-                console.log(guideList);
+                // console.log(guideList);
 
                 // 放入数组
                 this.guides.push(guideList[i]);
-                console.log(this.guides);
-
+                // console.log(this.guides);
             }
+        },
+        // 获取一起游
+        async getSomeT() {
+            let res = await getSomeCollage();
+            let collageList = res.data.data.collageList;
+            // console.log(collageList);
+
+            for (var i = 0; i < collageList.length; i++) {
+                // 处理时间
+                let date = util.getDateString(collageList[i].dTime);
+                collageList[i].date = date;
+
+                // 通过account获取用户姓名
+                const u = await this.getName(collageList[i].account);
+                let uName = u.data.data.username;
+                collageList[i].use = uName;
+
+                // 放入存储数组中
+                this.toget.hot.push(collageList[i]);
+            }
+            // console.log(this.toget.hot);
+        },
+        // 获取我参与的一起游
+        async getJoinT(rule) {
+            let r = await getJoinCollage(rule);
+            // console.log(r);
+            let collageList = r.data.data.collageList;
+            // console.log(collageList);
+
+            for (var i = 0; i < collageList.length; i++) {
+                // 处理时间
+                let date = util.getDateString(collageList[i].dTime);
+                collageList[i].date = date;
+
+                // 通过account获取用户姓名
+                const u = await this.getName(collageList[i].account);
+                let uName = u.data.data.username;
+                collageList[i].use = uName;
+
+                // 放入存储数组中
+                this.toget.join.push(collageList[i]);
+            }
+            // console.log(this.toget.join);
+        },
+        // 获取我发起的一起游
+        async getLaunchT(rule) {
+            let r = await getLaunchCollage(rule);
+            let collageList = r.data.data.collageList;
+            // console.log(collageList);
+
+            for (var i = 0; i < collageList.length; i++) {
+                // 处理时间
+                let date = util.getDateString(collageList[i].dTime);
+                collageList[i].date = date;
+
+                // 通过account获取用户姓名
+                const u = await this.getName(collageList[i].account);
+                let uName = u.data.data.username;
+                collageList[i].use = uName;
+
+                // 放入存储数组中
+                this.toget.Launch.push(collageList[i]);
+            }
+            // console.log(this.toget.Launch);
+        },
+        // 加入一起游
+        getHot(item) {
+            this.toId = item.id;
+            this.describe = item.describe;
+            this.people = item.pNumber;
+        },
+        async joinTo() {
+            let da = {
+                token: this.rule.token,
+                id: this.toId,
+            };
+            let r = await joinCollage(da);
+        },
+        // 发起一起游
+        async () {
+            let da = {
+                token: this.rules.token,
+                pNumber: this.formTo.pNumber,
+                departure: this.formTo.departure,
+                destination: this.formTo.destination,
+                dTime: this.formTo.dTime,
+                describe: this.formTo.describe,
+            };
+            const r = await addCollage(da);
+            console.log(r);
+
+            // 清空表单
+            // this.form.name = "";
+
+            // 刷新页面
+            location.reload();
         },
     },
     computed: {
@@ -502,6 +731,9 @@ export default {
     async created() {
         this.getMyConsult(this.rule);
         this.getGuides();
+        this.getSomeT();
+        this.getJoinT(this.rule);
+        this.getLaunchT(this.rule);
     },
 }
 </script>
@@ -524,9 +756,13 @@ export default {
 }
 
 .tour,
-.homeGuide,
 .together {
     background-color: pink;
+    height: 465px;
+}
+
+.homeGuide {
+    background-color: rgb(201, 219, 219);
     height: 465px;
 }
 
@@ -539,7 +775,7 @@ export default {
 .tourTop {
     position: relative;
     overflow: hidden;
-    background-color: blueviolet;
+    background-color: rgb(213, 184, 240);
 }
 
 .tourTop h1 {
@@ -703,13 +939,13 @@ export default {
 
 .guideBox h3 {
     text-align: center;
-    background-color: saddlebrown;
+    background-color: rgb(204, 160, 129);
 }
 
 .guideBox p {
     margin: 10px 5px;
     height: 64px;
-    background-color: saddlebrown;
+    /* background-color: saddlebrown; */
     /* 省略文本 */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -722,7 +958,7 @@ export default {
     position: absolute;
     right: 0;
     margin-top: 10px;
-    background-color: saddlebrown;
+    /* background-color: saddlebrown; */
 }
 
 .myConsults .fillCon {
@@ -745,25 +981,43 @@ export default {
     text-align: center;
     line-height: 23px;
     color: saddlebrown;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
 }
 
 .myConsults span {
     position: absolute;
+    font-size: 14px;
     left: 0;
     bottom: 5px;
-    background-color: bisque;
+    /* background-color: bisque; */
 }
 
 /* 一起游 */
 .together {
-    height: 200px;
+    background-color: rgb(252, 237, 218);
+}
+
+.togetherHot h3 {
+    background-color: rgb(201, 219, 219);
+}
+
+.togetherHot .num {
+    padding-left: 10px;
+    width: 147px;
+    bottom: 55px;
+    border-radius: 10px;
+    background-color: rgb(214, 193, 253);
+}
+
+.togetherHot p {
+    -webkit-line-clamp: 1;
 }
 
 /* 页脚 */
 .footer {
+    margin-top: 55px;
     height: 200px;
-    background-color: #333;
+    background-color: rgb(110, 107, 107);
 }
 
 .footerCon {
@@ -796,7 +1050,7 @@ export default {
     float: right;
     color: #ccc;
     width: 450px;
-    margin-right: 100px;
+    margin-right: 80px;
 }
 
 .footerCon .right .title {
