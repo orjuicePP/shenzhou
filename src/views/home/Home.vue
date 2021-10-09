@@ -87,14 +87,15 @@
 
             <!-- 内容 -->
             <div class="tourContent">
-                <div class="box" v-for="(item,index) in articles">
+                <div class="box" v-for="(item,index) in articles" @click="getA(item);go()">
                     <h3>{{item.title}}</h3>
                     <span class="boxProvince">{{item.province}}</span>
                     <span class="boxPlace">{{item.placeName}}</span>
                     <span class="boxAuthor">{{item.authorAccount}}</span>
                     <span class="boxContent">{{item.content}}</span>
-                    <span class="boxTime">{{item.releaseTime}}</span>
-                    <span class="boxThumb">{{item.thumb}}</span>
+                    <span class="boxTime">{{item.date}}</span>
+                    <span class="writer">{{item.authorUsername}}</span>
+                    <span class="boxThumb el-icon-star-on">{{item.thumb}}</span>
                 </div>
             </div>
         </div>
@@ -448,7 +449,10 @@ export default {
                 placeName: '',
                 province: '',
                 content: '',
-                pictureId: '',
+            },
+            addArticleData: {
+                photoId: null,
+                photoUrl: null,
             },
             formLabelWidth: '120px',
             // 向导游发起咨询
@@ -470,22 +474,14 @@ export default {
             },
             // 一些测试数据
             articles: [
-                { id: 1, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
-                { id: 2, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
-                { id: 3, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
-                { id: 4, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
-                { id: 5, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
-                { id: 6, title: '好困', province: '广东', placeName: '垃圾广金', authorAccount: 123, content: '困死困死困死困死困死困死', releaseTime: 123456, thumb: 10000 },
+                // { id: 1, authorUsername: 'pp', title: '好困', province: '广东', placeName: '垃圾广金', content: '困死困死困死困死困死困死', date: '2021.10.9', thumb: 10000 },
+                // { id: 2, authorUsername: 'pp', title: '好困', province: '广东', placeName: '垃圾广金', content: '困死困死困死困死困死困死', date: '2021.10.9', thumb: 10000 },
             ],
             guides: [
-                { id: 1, guide: '导游1', introduction: '啦啦啦我好困不想做了', score: 100 },
-                { id: 2, guide: '导游2', introduction: '555555555555555', score: 100 },
-                { id: 3, guide: '导游3', introduction: 'sdohfisdfisdbfhsdbfksdc', score: 100 },
+                // { id: 1, guide: '导游1', introduction: '啦啦啦我好困不想做了', score: 100 },
+                // { id: 2, guide: '导游2', introduction: '555555555555555', score: 100 },
+                // { id: 3, guide: '导游3', introduction: 'sdohfisdfisdbfhsdbfksdc', score: 100 },
             ],
-            addArticleData: {
-                photoId: null,
-                photoUrl: null,
-            },
             rules: {
                 gui: [
                     // { id: 1, guide: '哇哇哇哇1', date: 123456, content: '啦啦啦我好困不想做了啦啦啦我好困不想做了', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
@@ -515,6 +511,7 @@ export default {
             formLabelWidth2: '200px',
             dialogVisibleSee: false,
             see: '',
+            aId: 0,
         };
     },
 
@@ -543,14 +540,41 @@ export default {
         async getName(account) {
             return await getUserInfo({ account });
         },
+        // 获得文章
+        async getArticle() {
+            let da = {
+                page: 0,
+            };
+            let r = await getArticles(da);
+            let articles = r.data.data.articles;
+            // console.log(articles);
+
+            for (var i = 0; i < articles.length; i++) {
+                // 处理时间
+                let date = util.getDateString(articles[i].releaseTime);
+                articles[i].date = date;
+
+                // 放入存储数组中
+                this.articles.push(articles[i]);
+            }
+            // console.log(articles);
+        },
         // 发布文章
         async submit() {
-            // let res = this.form;
-            // const r = await releaseArticle(res);
-            // console.log(r);
+            let res = this.form;
+            let da = {
+                token: this.rules.token,
+                title: this.form.title,
+                placeName: this.form.placeName,
+                province: this.form.province,
+                content: this.form.content,
+                pictureId: this.addArticleData.photoId,
+            };
+            const r = await releaseArticle(da);
+            console.log(r);
 
             // 刷新页面
-            // location.reload();
+            location.reload();
         },
         async uploadPhoto() {
             if (this.addArticleData.photoUrl == null) {
@@ -803,6 +827,19 @@ export default {
             // 清空表单
             this.formGuide.name = '';
         },
+        // 跳转
+        // 获得点击的盒子
+        getA(item) {
+            this.aId = item.id;
+        },
+        go() {
+            this.$router.push({
+                path: '/article',
+                query: {
+                    articleId: this.aId,
+                }
+            })
+        }
     },
     computed: {
         photoUrl() {
@@ -810,6 +847,7 @@ export default {
         }
     },
     async created() {
+        this.getArticle();
         this.getMyConsult(this.rule);
         this.getGuides();
         this.getSomeT();
@@ -838,9 +876,13 @@ export default {
 
 .tour,
 .together {
-    background-color: rgb(247, 211, 217);
+    /* background-color: rgb(247, 211, 217); */
     height: 465px;
 }
+
+/* .tour{
+    background-color: rgb(196, 243, 214);
+} */
 
 .homeGuide {
     position: relative;
@@ -863,7 +905,7 @@ export default {
 .tourTop {
     position: relative;
     overflow: hidden;
-    background-color: rgb(213, 184, 240);
+    background-color: rgb(227, 227, 227);
 }
 
 .tourTop h1 {
@@ -944,7 +986,7 @@ export default {
 .tourContent {
     height: 420px;
     /* margin-top: 20px; */
-    background-color: saddlebrown;
+    background-color: rgb(245, 209, 184);
 }
 
 /* 文章part */
@@ -968,14 +1010,14 @@ export default {
 .boxProvince {
     margin-left: 5px;
     padding: 0 5px;
-    background-color: darksalmon;
+    background-color: rgb(243, 201, 187);
     border-radius: 5px;
 }
 
 .boxPlace {
     margin-left: 5px;
     padding: 0 5px;
-    background-color: aquamarine;
+    background-color: rgb(207, 247, 234);
     border-radius: 5px;
 }
 
@@ -991,7 +1033,8 @@ export default {
 .boxContent {
     font-size: 16px;
     margin-top: 10px;
-    background-color: aqua;
+    padding: 3px;
+    background-color: rgb(219, 236, 236);
     /* 省略文本 */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1002,8 +1045,8 @@ export default {
 
 .boxTime {
     position: absolute;
-    bottom: 10px;
-    background-color: rgb(252, 247, 175);
+    bottom: 8px;
+    /* background-color: rgb(252, 247, 175); */
     border-radius: 5px;
 }
 
@@ -1011,7 +1054,15 @@ export default {
     position: absolute;
     right: 0;
     bottom: 30px;
-    background-color: royalblue;
+    /* background-color: royalblue; */
+}
+
+.writer {
+    position: absolute;
+    left: 0;
+    bottom: 31px;
+    font-size: 14px;
+    background-color: rgb(255, 246, 198);
 }
 
 /* 导游part */

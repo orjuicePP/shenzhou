@@ -9,7 +9,7 @@ export function getArticles(data) {
         url: '/public/getArticles',
         params: {
             page: data.page,
-            province: data.province,
+            // province: data.province,
         },
     });
 };
