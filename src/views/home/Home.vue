@@ -1182,7 +1182,7 @@ export default {
     -webkit-line-clamp: 1;
     bottom: 18px;
     left: 0;
-    margin-left: 3px;
+    margin-left: 15px;
 }
 
 .togetherHot .goTime {
