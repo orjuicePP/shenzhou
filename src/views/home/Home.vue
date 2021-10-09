@@ -260,7 +260,7 @@
                 </div>-->
             </div>
 
-            <div>
+            <div class="toCon">
                 <el-tabs v-model="activeName2" @tab-click="handleClick">
                     <!-- 大热的一起游 -->
                     <el-tab-pane label="大热的一起游" name="first">
@@ -876,18 +876,20 @@ export default {
 
 .tour,
 .together {
-    background-color: rgb(247, 211, 217);
+    background-color: rgb(235, 192, 243);
     height: 600px;
+    margin-bottom: 60px;
 }
 
 .tour {
-    background-color: rgb(225, 243, 216);
+    background-color: rgb(208, 240, 234);
 }
 
 .homeGuide {
     position: relative;
-    background-color: rgb(201, 219, 219);
+    background-color: rgb(225, 243, 216);
     height: 465px;
+    margin-bottom: 60px;
 }
 
 .apply {
@@ -1038,13 +1040,13 @@ export default {
     font-size: 13px;
     margin-top: 9px;
     padding: 3px;
-    height: 66px;
+    height: 84px;
     /* background-color: rgb(219, 236, 236); */
     /* 省略文本 */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
 }
 
@@ -1060,7 +1062,7 @@ export default {
 .boxThumb {
     position: absolute;
     right: 20px;
-    bottom: 30px;
+    bottom: 35px;
     /* background-color: royalblue; */
 }
 
@@ -1086,13 +1088,17 @@ export default {
 }
 
 .guideBox h3 {
+    color: #333;
     text-align: center;
-    background-color: rgb(204, 160, 129);
+    border-radius: 5px 5px 0 0;
+    padding: 3px;
+    background-color: rgb(236, 216, 203);
 }
 
 .guideBox p {
-    margin: 10px 5px;
+    margin: 10px 8px;
     height: 64px;
+    color: #333;
     /* background-color: saddlebrown; */
     /* 省略文本 */
     overflow: hidden;
@@ -1104,13 +1110,14 @@ export default {
 
 .guideBox span {
     position: absolute;
-    right: 0;
+    right: 14px;
+    bottom: 14px;
     margin-top: 10px;
     /* background-color: saddlebrown; */
 }
 
 .myConsults .fillCon {
-    margin-top: 5px;
+    margin: 10px 8px;
     padding: 0 5px;
     background-color: bisque;
     height: 65px;
@@ -1124,8 +1131,10 @@ export default {
 
 .myConsults p {
     position: absolute;
-    bottom: 20px;
+    bottom: 14px;
+    left: 1px;
     height: 23px;
+    font-size: 13px;
     text-align: center;
     line-height: 23px;
     color: saddlebrown;
@@ -1142,10 +1151,15 @@ export default {
 
 /* 一起游 */
 .together {
-    background-color: rgb(252, 237, 218);
+    background-color: rgb(237, 218, 252);
+}
+
+.togetherHot {
+    padding: 10px;
 }
 
 .togetherHot h3 {
+    border-radius: 0;
     background-color: rgb(201, 219, 219);
 }
 
