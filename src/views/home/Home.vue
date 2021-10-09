@@ -269,7 +269,7 @@
                             v-for="(item,index) in toget.hot"
                             @click="dialogVisibleJoin = true;getHot(item)"
                         >
-                            <div style="text-align: center">{{item.use}}</div>
+                            <div style="text-align: center; margin-bottom: 5px; ">{{item.use}}</div>
                             <h3>From:{{item.departure}}</h3>
                             <h3>To:{{item.destination}}</h3>
                             <p>{{item.describe}}</p>
@@ -1151,11 +1151,14 @@ export default {
 
 /* 一起游 */
 .together {
+    height: 535px;
     background-color: rgb(237, 218, 252);
 }
 
 .togetherHot {
-    padding: 10px;
+    padding: 15px;
+    margin: 10px 45px;
+    overflow: hidden;
 }
 
 .togetherHot h3 {
@@ -1167,12 +1170,15 @@ export default {
     padding-left: 10px;
     width: 147px;
     bottom: 55px;
+    margin-left: 35px;
     border-radius: 10px;
     background-color: rgb(214, 193, 253);
 }
 
 .togetherHot p {
     -webkit-line-clamp: 1;
+    bottom: 18px;
+    margin-left: 2px;
 }
 
 /* 页脚 */
