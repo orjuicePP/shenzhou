@@ -488,8 +488,8 @@ export default {
             ],
             rules: {
                 gui: [
-                    { id: 1, guide: '哇哇哇哇1', date: 123456, content: '啦啦啦我好困不想做了啦啦啦我好困不想做了', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
-                    { id: 4, guide: '哇哇哇哇4', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
+                    // { id: 1, guide: '哇哇哇哇1', date: 123456, content: '啦啦啦我好困不想做了啦啦啦我好困不想做了', reply: '', score: 1, stage: 0, clickFlag: false, displayYes: true },
+                    // { id: 4, guide: '哇哇哇哇4', date: 123456, content: 'hh', reply: '', score: 1, stage: 1, clickFlag: true, displayYes: true },
                 ],
                 answer: '',
             },
