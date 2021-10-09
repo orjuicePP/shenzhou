@@ -107,8 +107,12 @@
                 <h1 class="title">名气导游</h1>
 
                 <!-- 申请成为导游按钮 -->
-                <div class="apply" @click="dialogTableVisibleGuide = true">
-                    <el-button type="primary" plain icon="el-icon-s-flag">申请成为导游</el-button>
+                <div
+                    class="apply"
+                    @click="dialogTableVisibleGuide = true"
+                    style="color: white; background-color: #e1f3d8; border-color: #e1f3d8;"
+                >
+                    <el-button type="success" plain icon="el-icon-s-flag">申请成为导游</el-button>
                 </div>
 
                 <!-- 申请成为导游对话框 -->
@@ -274,7 +278,7 @@
                             <h3>To:{{item.destination}}</h3>
                             <p>{{item.describe}}</p>
                             <span class="num">{{item.pNumber}}人团</span>
-                            <span>出发时间：{{item.date}}</span>
+                            <span class="goTime">出发时间：{{item.date}}</span>
                         </div>
 
                         <!-- 加入一起游对话框 -->
@@ -306,8 +310,8 @@
                             <h3>From:{{item.departure}}</h3>
                             <h3>To:{{item.destination}}</h3>
                             <p>{{item.describe}}</p>
-                            <span class="num">还需{{item.pNumber}}人即可成团！</span>
-                            <span>出发时间：{{item.date}}</span>
+                            <span class="num">{{item.pNumber}}人</span>
+                            <span class="goTime">出发时间：{{item.date}}</span>
                         </div>
                     </el-tab-pane>
 
@@ -322,8 +326,8 @@
                             <h3>From:{{item.departure}}</h3>
                             <h3>To:{{item.destination}}</h3>
                             <p>{{item.describe}}</p>
-                            <span class="num">还需{{item.pNumber}}人即可成团！</span>
-                            <span>出发时间：{{item.date}}</span>
+                            <span class="num">{{item.pNumber}}人</span>
+                            <span class="goTime">出发时间：{{item.date}}</span>
                         </div>
                     </el-tab-pane>
 
@@ -712,7 +716,8 @@ export default {
             for (var i = 0; i < collageList.length; i++) {
                 // 处理时间
                 let date = util.getDateString(collageList[i].dTime);
-                collageList[i].date = date;
+                let shortDate = date.split(" ");
+                collageList[i].date = shortDate;
 
                 // 通过account获取用户姓名
                 const u = await this.getName(collageList[i].account);
@@ -987,8 +992,6 @@ export default {
 
 .tourContent {
     height: 420px;
-    /* margin-top: 20px; */
-    /* background-color: rgb(245, 209, 184); */
 }
 
 /* 文章part */
@@ -997,7 +1000,6 @@ export default {
     float: left;
     width: 234px;
     height: 195px;
-    /* margin: 0 42px; */
     margin-left: 23px;
     margin-right: 23px;
     margin-top: 20px;
@@ -1163,7 +1165,7 @@ export default {
 
 .togetherHot h3 {
     border-radius: 0;
-    background-color: rgb(201, 219, 219);
+    background-color: white;
 }
 
 .togetherHot .num {
@@ -1179,7 +1181,12 @@ export default {
 .togetherHot p {
     -webkit-line-clamp: 1;
     bottom: 18px;
-    margin-left: 2px;
+    left: 0;
+    margin-left: 3px;
+}
+
+.togetherHot .goTime {
+    margin-left: 15px;
 }
 
 /* 页脚 */
