@@ -880,7 +880,7 @@ export default {
     height: 600px;
 }
 
-.tour{
+.tour {
     background-color: rgb(225, 243, 216);
 }
 
@@ -1005,20 +1005,23 @@ export default {
 }
 
 .box h3 {
-    margin-bottom: 7px;
+    margin-bottom: 10px;
+    /* 防溢出 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .boxProvince {
-    margin-left: 5px;
-    padding: 0 5px;
-    background-color: rgb(243, 201, 187);
+    padding: 3px 5px;
+    background-color: rgb(250, 222, 212);
     border-radius: 5px;
 }
 
 .boxPlace {
-    margin-left: 5px;
-    padding: 0 5px;
-    background-color: rgb(207, 247, 234);
+    margin-left: 7px;
+    padding: 3px 5px;
+    background-color: rgb(223, 250, 241);
     border-radius: 5px;
 }
 
@@ -1032,15 +1035,16 @@ export default {
 }
 
 .boxContent {
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 13px;
+    margin-top: 9px;
     padding: 3px;
-    background-color: rgb(219, 236, 236);
+    height: 66px;
+    /* background-color: rgb(219, 236, 236); */
     /* 省略文本 */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
 }
 
@@ -1049,11 +1053,12 @@ export default {
     bottom: 8px;
     /* background-color: rgb(252, 247, 175); */
     border-radius: 5px;
+    font-size: 14px;
 }
 
 .boxThumb {
     position: absolute;
-    right: 15px;
+    right: 20px;
     bottom: 30px;
     /* background-color: royalblue; */
 }
@@ -1061,8 +1066,10 @@ export default {
 .writer {
     position: absolute;
     left: 20px;
-    bottom: 50px;
+    bottom: 30px;
     font-size: 14px;
+    padding: 5px;
+    border-radius: 5px;
     background-color: rgb(255, 246, 198);
 }
 
