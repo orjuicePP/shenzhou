@@ -59,6 +59,7 @@
                     </div>
                 </div>
             </el-tab-pane>
+            <div v-if="guideInfo.score != -1" class="myScore">我的评分：{{guideInfo.score}}</div>
         </el-tabs>
 
         <!-- 回复咨询对话框 -->
@@ -102,14 +103,16 @@
                 <el-button type="primary" @click="dialogVisibles = false">确 定</el-button>
             </span>
         </el-dialog>
+
+        <div class="full"></div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 import Header from 'components/content/Header.vue';
-import { getConsults, replyConsult } from "network/Guide.js";
+import { getConsults, replyConsult, getOwnGuideInfo } from "network/Guide.js";
 import { getUserInfo } from "network/Public.js";
-import util from "common/utils.js"
+import util from "common/utils.js";
 window.util = util;
 
 export default {
@@ -150,6 +153,7 @@ export default {
                     // { id: '1咨询3', account: 3, consultTime: 546151513, content: "cjsdbfjhsiuhfsn", reply: "", score: 0, },
                 ],
             },
+            guideInfo: {},
         };
     },
 
@@ -181,32 +185,33 @@ export default {
                 none.style.display = 'block';
                 noneCons.style.display = 'none';
             } else {
-                for (var i = 0; i < consultList.length; i++) {
-                    // 处理时间
-                    let date = util.getDateString(consultList[i].consultTime);
-                    consultList[i].date = date;
+                let ycx = 10;
+                while (ycx--) {
+                    for (var i = 0; i < consultList.length; i++) {
+                        // 处理时间
+                        let date = util.getDateString(consultList[i].consultTime);
+                        consultList[i].date = date;
 
-                    // 通过account获取用户姓名
-                    const userInfo = await this.getName(consultList[i].account);
-                    let name = userInfo.data.data.username;
-                    consultList[i].name = name;
-                    console.log(consultList);
+                        // 通过account获取用户姓名
+                        const userInfo = await this.getName(consultList[i].account);
+                        let name = userInfo.data.data.username;
+                        consultList[i].name = name;
 
-                    // 待回复
-                    if (consultList[i].stage == 0) {
-                        this.rules.noneReply.push(consultList[i]);
-                        // console.log(this.rules.noneReply);
-                        // 已回复
-                    } else if (consultList[i].stage == 1) {
-                        this.rules.alreadyReply.push(consultList[i]);
-                        // console.log(this.rules.alreadyReply);
-                        // 已评分
-                    } else if (consultList[i].stage == 2) {
-                        this.rules.grade.push(consultList[i]);
-                        // console.log(this.rules.grade);
+                        // 待回复
+                        if (consultList[i].stage == 0) {
+                            this.rules.noneReply.push(consultList[i]);
+                            // console.log(this.rules.noneReply);
+                            // 已回复
+                        } else if (consultList[i].stage == 1) {
+                            this.rules.alreadyReply.push(consultList[i]);
+                            // console.log(this.rules.alreadyReply);
+                            // 已评分
+                        } else if (consultList[i].stage == 2) {
+                            this.rules.grade.push(consultList[i]);
+                            // console.log(this.rules.grade);
+                        }
                     }
                 }
-
             }
 
         },
@@ -242,10 +247,18 @@ export default {
         // 获取回复渲染至对话框
         getAn(item) {
             this.re = item.reply;
+        },
+
+        async loadGuideInfo() {
+            let res = (await getOwnGuideInfo({
+                token: this.rules.token,
+            })).data.data;
+            this.guideInfo = res;
         }
     },
     async created() {
         this.getCons(this.rules);
+        this.loadGuideInfo();
     },
 };
 </script>
@@ -289,26 +302,54 @@ export default {
 }
 
 .tab {
+    position: relative;
     width: var(--baseWidth);
-    margin: 20px auto;
+    margin: 20px auto 50px;
+}
+
+.tab .myScore {
+    position: absolute;
+    top: -39px;
+    right: 20px;
+    height: 39px;
+    line-height: 39px;
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+}
+
+.tab .myScore:hover {
+    color: #000;
+}
+
+.tab .el-tabs__content {
+    overflow: unset;
+    padding: 30px;
 }
 
 .consults {
     overflow: hidden;
     margin: 0 auto;
-    width: 960px;
 }
 
 .consult {
     position: relative;
     float: left;
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-bottom: 40px;
-    width: 220px;
-    height: 190px;
+    width: 282px;
+    height: 220px;
+    padding: 20px;
+    margin-right: 30px;
+    box-sizing: border-box;
     background-color: pink;
-    border-radius: 10%;
+    border-radius: 10px;
+}
+
+.consult:nth-child(n + 5) {
+    margin-top: 30px;
+}
+
+.consult:nth-child(4n) {
+    margin-right: 0px;
 }
 
 .noneR {
@@ -342,36 +383,38 @@ export default {
 }
 
 .ask {
-    margin-top: 20px;
-    margin-left: 6px;
-    color: rgb(95, 9, 231);
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 5px;
 }
 
 .problem {
     font-size: 18px;
     /* background-color: blueviolet; */
-    margin: 15px;
     color: rgb(65, 78, 74);
     /* 溢出省略号 */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
 }
 
 .date {
     position: absolute;
+    bottom: 20px;
     color: rgb(219, 150, 59);
     width: 140px;
-    bottom: 33px;
-    margin-left: 5px;
 }
 
 .score {
     position: absolute;
     color: rgb(161, 77, 62);
-    bottom: 9px;
-    right: 5px;
+    bottom: 20px;
+    right: 20px;
+}
+
+.full {
+    height: 1px;
 }
 </style>
