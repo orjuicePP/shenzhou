@@ -1238,7 +1238,7 @@ export default {
 }
 
 .footerCon .right ul li a:hover {
-    color: #b5e4c7;
+    color: #ff5c38;
 }
 
 .footerCon .middle {
