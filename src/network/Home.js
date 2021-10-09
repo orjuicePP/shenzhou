@@ -156,3 +156,17 @@ export function addCollage(data) {
         },
     });
 };
+
+// 申请成为导游
+export function guideApply(data) {
+    return request({
+        method: 'POST',
+        url: '/guideApply',
+        headers: {
+            token: data.token,
+        },
+        params: {
+            introduction: data.introduction,
+        },
+    });
+};
