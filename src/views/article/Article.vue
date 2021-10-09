@@ -463,6 +463,10 @@ export default {
     position: absolute;
     top: 5px;
     left: 8px;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .main > .right > .otherArticle > ul > li > .authorName {
