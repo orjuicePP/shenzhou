@@ -185,31 +185,28 @@ export default {
                 none.style.display = 'block';
                 noneCons.style.display = 'none';
             } else {
-                let ycx = 10;
-                while (ycx--) {
-                    for (var i = 0; i < consultList.length; i++) {
-                        // 处理时间
-                        let date = util.getDateString(consultList[i].consultTime);
-                        consultList[i].date = date;
+                for (var i = 0; i < consultList.length; i++) {
+                    // 处理时间
+                    let date = util.getDateString(consultList[i].consultTime);
+                    consultList[i].date = date;
 
-                        // 通过account获取用户姓名
-                        const userInfo = await this.getName(consultList[i].account);
-                        let name = userInfo.data.data.username;
-                        consultList[i].name = name;
+                    // 通过account获取用户姓名
+                    const userInfo = await this.getName(consultList[i].account);
+                    let name = userInfo.data.data.username;
+                    consultList[i].name = name;
 
-                        // 待回复
-                        if (consultList[i].stage == 0) {
-                            this.rules.noneReply.push(consultList[i]);
-                            // console.log(this.rules.noneReply);
-                            // 已回复
-                        } else if (consultList[i].stage == 1) {
-                            this.rules.alreadyReply.push(consultList[i]);
-                            // console.log(this.rules.alreadyReply);
-                            // 已评分
-                        } else if (consultList[i].stage == 2) {
-                            this.rules.grade.push(consultList[i]);
-                            // console.log(this.rules.grade);
-                        }
+                    // 待回复
+                    if (consultList[i].stage == 0) {
+                        this.rules.noneReply.push(consultList[i]);
+                        // console.log(this.rules.noneReply);
+                        // 已回复
+                    } else if (consultList[i].stage == 1) {
+                        this.rules.alreadyReply.push(consultList[i]);
+                        // console.log(this.rules.alreadyReply);
+                        // 已评分
+                    } else if (consultList[i].stage == 2) {
+                        this.rules.grade.push(consultList[i]);
+                        // console.log(this.rules.grade);
                     }
                 }
             }
@@ -353,15 +350,15 @@ export default {
 }
 
 .noneR {
-    background-color: rgb(252, 220, 223);
+    background-color: rgb(255, 243, 246);
 }
 
 .alreadyRe {
-    background-color: rgb(187, 230, 214);
+    background-color: rgb(226, 255, 243);
 }
 
 .grades {
-    background-color: rgb(199, 220, 251);
+    background-color: rgb(234, 242, 255);
 }
 
 .pages {
