@@ -5,7 +5,7 @@
 
         <!-- 轮播图 -->
         <div class="run">
-            <el-carousel indicator-position="outside">
+            <el-carousel indicator-position="outside" :height="'359px'">
                 <el-carousel-item v-for="item in imgList" :key="item.id">
                     <img :src="item.idView" class="image" />
                 </el-carousel-item>
@@ -142,7 +142,7 @@
                     >
                         <h3>{{item.guide}}</h3>
                         <p>{{item.introduction}}</p>
-                        <span>评分：{{item.score}}</span>
+                        <span v-if="item.score != -1">评分：{{item.score}}</span>
                     </div>
                 </el-tab-pane>
 
@@ -693,14 +693,12 @@ export default {
             let res = await getSomeGuide();
             let guideList = res.data.data.guideList;
             // console.log(guideList);
-            // console.log(guideList[0].guideAccount);
 
             for (var i = 0; i < guideList.length; i++) {
                 // 通过guideAccount获取导游姓名
                 const gui = await this.getName(guideList[i].guideAccount);
                 let guideName = gui.data.data.username;
                 guideList[i].guide = guideName;
-                // console.log(guideList);
 
                 // 放入数组
                 this.guides.push(guideList[i]);
@@ -717,7 +715,7 @@ export default {
                 // 处理时间
                 let date = util.getDateString(collageList[i].dTime);
                 let shortDate = date.split(" ");
-                collageList[i].date = shortDate;
+                collageList[i].date = shortDate[0];
 
                 // 通过account获取用户姓名
                 const u = await this.getName(collageList[i].account);
@@ -888,13 +886,15 @@ export default {
 
 .tour {
     background-color: rgb(208, 240, 234);
+    overflow: hidden;
 }
 
 .homeGuide {
     position: relative;
     background-color: rgb(225, 243, 216);
-    height: 465px;
+    height: 510px;
     margin-bottom: 60px;
+    overflow: hidden;
 }
 
 .apply {
@@ -1180,9 +1180,11 @@ export default {
 
 .togetherHot p {
     -webkit-line-clamp: 1;
-    bottom: 18px;
+    bottom: 25px;
     left: 0;
-    margin-left: 15px;
+    margin: 0;
+    margin-left: 12px;
+    margin-right: 5px;
 }
 
 .togetherHot .goTime {
