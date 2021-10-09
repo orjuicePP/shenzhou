@@ -28,7 +28,7 @@ export default {
 }
 
 body {
-    background-color: #e3e3e3;
+    background-color: #f5f5f5;
 }
 
 .beforeBtn::before {

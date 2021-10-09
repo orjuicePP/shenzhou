@@ -876,8 +876,8 @@ export default {
 
 .tour,
 .together {
-    /* background-color: rgb(247, 211, 217); */
-    height: 465px;
+    background-color: rgb(247, 211, 217);
+    height: 600px;
 }
 
 .tour{
@@ -905,12 +905,12 @@ export default {
 .tourTop {
     position: relative;
     overflow: hidden;
-    background-color: rgb(227, 227, 227);
+    background-color: #f5f5f5;
 }
 
 .tourTop h1 {
     float: left;
-    /* background-color: aquamarine; */
+    margin-bottom: 20px;
 }
 
 .tourTop .photoBox {
@@ -986,21 +986,22 @@ export default {
 .tourContent {
     height: 420px;
     /* margin-top: 20px; */
-    background-color: rgb(245, 209, 184);
+    /* background-color: rgb(245, 209, 184); */
 }
 
 /* 文章part */
 .box {
     position: relative;
     float: left;
-    width: 236px;
-    height: 188px;
+    width: 234px;
+    height: 195px;
     /* margin: 0 42px; */
-    margin-left: 42px;
-    margin-right: 42px;
+    margin-left: 23px;
+    margin-right: 23px;
     margin-top: 20px;
-    background-color: white;
+    background-color: #fcffe4;
     border-radius: 5px;
+    padding: 20px;
 }
 
 .box h3 {
@@ -1052,15 +1053,15 @@ export default {
 
 .boxThumb {
     position: absolute;
-    right: 0;
+    right: 15px;
     bottom: 30px;
     /* background-color: royalblue; */
 }
 
 .writer {
     position: absolute;
-    left: 0;
-    bottom: 31px;
+    left: 20px;
+    bottom: 50px;
     font-size: 14px;
     background-color: rgb(255, 246, 198);
 }
