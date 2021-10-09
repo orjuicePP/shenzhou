@@ -838,7 +838,7 @@ export default {
                 query: {
                     articleId: this.aId,
                 }
-            })
+            });
         }
     },
     computed: {
