@@ -1051,6 +1051,7 @@ export default {
 .boxTime {
     position: absolute;
     bottom: 8px;
+    right: 20px;
     /* background-color: rgb(252, 247, 175); */
     border-radius: 5px;
     font-size: 14px;
@@ -1066,7 +1067,7 @@ export default {
 .writer {
     position: absolute;
     left: 20px;
-    bottom: 30px;
+    bottom: 3px;
     font-size: 14px;
     padding: 5px;
     border-radius: 5px;
