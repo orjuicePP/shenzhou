@@ -273,7 +273,7 @@
                             <h3>From:{{item.departure}}</h3>
                             <h3>To:{{item.destination}}</h3>
                             <p>{{item.describe}}</p>
-                            <span class="num">还需{{item.pNumber}}人即可成团！</span>
+                            <span class="num">{{item.pNumber}}人团</span>
                             <span>出发时间：{{item.date}}</span>
                         </div>
 
@@ -1167,10 +1167,11 @@ export default {
 }
 
 .togetherHot .num {
-    padding-left: 10px;
-    width: 147px;
+    padding: 0px 10px;
+    width: 50px;
+    text-align: center;
     bottom: 55px;
-    margin-left: 35px;
+    margin-left: 82px;
     border-radius: 10px;
     background-color: rgb(214, 193, 253);
 }
