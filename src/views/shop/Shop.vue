@@ -232,7 +232,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .shopRoot > .main {
     width: var(--baseWidth);
     margin: 30px auto 0px;

@@ -210,7 +210,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 .main {
     width: var(--baseWidth);
     height: 640px;

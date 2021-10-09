@@ -857,7 +857,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .run,
 .tour,
 .homeGuide,
@@ -880,9 +880,9 @@ export default {
     height: 465px;
 }
 
-/* .tour{
-    background-color: rgb(196, 243, 214);
-} */
+.tour{
+    background-color: rgb(225, 243, 216);
+}
 
 .homeGuide {
     position: relative;
