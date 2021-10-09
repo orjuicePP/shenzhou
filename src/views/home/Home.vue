@@ -101,6 +101,32 @@
 
         <!-- 导游 -->
         <div class="homeGuide">
+            <div class="tourTop">
+                <!-- 标题 -->
+                <h1 class="title">名气导游</h1>
+
+                <!-- 申请成为导游按钮 -->
+                <div class="apply" @click="dialogTableVisibleGuide = true">
+                    <el-button type="primary" plain icon="el-icon-s-flag">申请成为导游</el-button>
+                </div>
+
+                <!-- 申请成为导游对话框 -->
+                <el-dialog title="申请成为导游" :visible.sync="dialogTableVisibleGuide">
+                    <el-form :model="formGuide">
+                        <el-form-item label="请对自己做出简要介绍" :label-width="formLabelWidths">
+                            <el-input v-model="formGuide.name" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogTableVisibleGuide = false">取 消</el-button>
+                        <el-button
+                            type="primary"
+                            @click="dialogTableVisibleGuide = false;gApply()"
+                        >确 定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
             <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
                 <!-- 名气导游 -->
                 <el-tab-pane label="名气导游" name="first">
@@ -266,9 +292,6 @@
                                 >加 入</el-button>
                             </span>
                         </el-dialog>
-
-                        <!-- 人满错误弹框 -->
-                        <!-- <el-button :plain="true" @click="open">错误</el-button> -->
                     </el-tab-pane>
 
                     <!-- 我参与的一起游 -->
@@ -276,6 +299,7 @@
                         <div
                             class="togetherHot guideBox myConsults"
                             v-for="(item,index) in toget.join"
+                            @click="dialogVisibleSee = true;getSee(item)"
                         >
                             <div style="text-align: center">{{item.use}}</div>
                             <h3>From:{{item.departure}}</h3>
@@ -291,6 +315,7 @@
                         <div
                             class="togetherHot guideBox myConsults"
                             v-for="(item,index) in toget.Launch"
+                            @click="dialogVisibleSee = true;getSee(item)"
                         >
                             <div style="text-align: center">{{item.use}}</div>
                             <h3>From:{{item.departure}}</h3>
@@ -300,6 +325,20 @@
                             <span>出发时间：{{item.date}}</span>
                         </div>
                     </el-tab-pane>
+
+                    <!-- 显示详情 -->
+                    <el-dialog
+                        title="详细信息"
+                        :visible.sync="dialogVisibleSee"
+                        width="30%"
+                        :before-close="handleClose"
+                    >
+                        <span>{{see}}</span>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisibleSee = false">取 消</el-button>
+                            <el-button type="primary" @click="dialogVisibleSee = false">确 定</el-button>
+                        </span>
+                    </el-dialog>
                 </el-tabs>
             </div>
         </div>
@@ -381,7 +420,7 @@ import { getUserInfo, getPhotoUrl, uploadPhoto, reUploadPhoto } from 'network/Pu
 import {
     getArticles, releaseArticle, getOwnConsult, scoreConsult, getSomeGuide,
     initiateConsultation, getJoinCollage, getLaunchCollage, getSomeCollage,
-    joinCollage, addCollage
+    joinCollage, addCollage, guideApply
 } from "network/Home.js";
 import util from "common/utils.js";
 window.util = util;
@@ -421,6 +460,12 @@ export default {
             // 用户给导游评分
             dialogFormVisible3: false,
             form3: {
+                name: '',
+            },
+            // 申请成为导游
+            dialogTableVisibleGuide: false,
+            formLabelWidths: '180px',
+            formGuide: {
                 name: '',
             },
             // 一些测试数据
@@ -468,6 +513,8 @@ export default {
                 describe: ''
             },
             formLabelWidth2: '200px',
+            dialogVisibleSee: false,
+            see: '',
         };
     },
 
@@ -498,17 +545,9 @@ export default {
         },
         // 发布文章
         async submit() {
-            // 获取表单里的值 调用接口
             // let res = this.form;
             // const r = await releaseArticle(res);
             // console.log(r);
-
-            // 清空表单
-            // this.form.title = "";
-            // this.form.placeName = "";
-            // this.form.province = "";
-            // this.form.content = "";
-            // this.form.pictureId = "";
 
             // 刷新页面
             // location.reload();
@@ -708,7 +747,9 @@ export default {
         getHot(item) {
             this.toId = item.id;
             this.describe = item.describe;
-            this.people = item.pNumber;
+        },
+        getSee(item) {
+            this.see = item.describe;
         },
         async joinTo() {
             let da = {
@@ -750,6 +791,18 @@ export default {
             // 刷新页面
             location.reload();
         },
+        // 申请成为导游
+        async gApply() {
+            let da = {
+                token: this.rules.token,
+                introduction: this.formGuide.name,
+            };
+            const r = await guideApply(da);
+            console.log(r);
+
+            // 清空表单
+            this.formGuide.name = '';
+        },
     },
     computed: {
         photoUrl() {
@@ -785,13 +838,20 @@ export default {
 
 .tour,
 .together {
-    background-color: pink;
+    background-color: rgb(247, 211, 217);
     height: 465px;
 }
 
 .homeGuide {
+    position: relative;
     background-color: rgb(201, 219, 219);
     height: 465px;
+}
+
+.apply {
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 /* 图片铺满 */
@@ -1104,7 +1164,7 @@ export default {
 }
 
 .footerCon .right ul li a:hover {
-    color: #ff5c38;
+    color: #b5e4c7;
 }
 
 .footerCon .middle {
